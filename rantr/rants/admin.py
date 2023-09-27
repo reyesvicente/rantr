@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from rantr.rants.models import Rant
+
+admin.site.register(Rant)

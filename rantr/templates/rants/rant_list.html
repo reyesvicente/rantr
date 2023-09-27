@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center">Rant List</h1>
+<a class="btn btn-primary" href="{% url 'rants:create' %}" role="button">
+    Rant
+</a>
+{% for rant in rants %}
+    <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a>
+{% endfor %}
+{% endblock content %}
