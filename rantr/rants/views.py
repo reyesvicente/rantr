@@ -12,10 +12,11 @@ from rantr.rants.models import Rant, Like
 class RantListView(ListView):
     model = Rant
     context_object_name = 'rants'
-
+    """
+    For user-only posts on the feed
     def get_queryset(self):
         return self.model.objects.filter(user=self.request.user)
-    
+    """
 
 class RantDetailView(DetailView):
     model = Rant
