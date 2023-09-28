@@ -7,5 +7,11 @@
 </a>
 {% for rant in rants %}
     <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a>
-{% endfor %}
+    {{ likes_count }}
+    {% if user_like %}
+    <a href="{% url 'rants:rant-unlike' rant.slug %}">Unlike</a> 
+    {% else %}
+    <a href="{% url 'rants:rant-like' rant.slug %}">Like</a>
+    {% endif %}
+    {% endfor %}
 {% endblock content %}

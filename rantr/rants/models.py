@@ -13,13 +13,22 @@ class Rant(TimeStampedModel):
     uuid = UUIDField(primary_key=True, version=4, editable=False)
     content = models.TextField(max_length=230)
     slug = AutoSlugField(populate_from='uuid')
+    likes = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name = 'rant'
         verbose_name_plural = 'rants'
 
     def __str__(self):
-        return self.slug
+        return self.content[:50]
     
     def get_absolute_url(self):
         return reverse("rants:detail", kwargs={"slug": self.slug})
+
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rant = models.ForeignKey(Rant, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (('user', 'rant'))

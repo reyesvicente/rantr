@@ -2,4 +2,11 @@
 
 {% block content %}
 {{ rant.content }}
+<!-- LIKES -->
+{{ likes_count }}
+{% if user_like %}
+<a href="{% url 'rants:rant-unlike' rant.slug %}">Unlike</a> 
+{% else %}
+<a href="{% url 'rants:rant-like' rant.slug %}">Like</a>
+{% endif %}
 {% endblock content %}
