@@ -21,11 +21,14 @@ class RantListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         rants = context['rants']
-
         liked_rants = Like.objects.values('rant').annotate(likes_count=Count('rant'))
 
         for rant in rants:
-            rant.likes_count = liked_rants.get(rant_id=rant.uuid)['likes_count']
+            rant_uuid = rant.uuid
+            if rant_uuid in liked_rants:
+                rant.likes_count = liked_rants[rant_uuid]['likes_count']
+            else:
+                rant.likes_count = 0
 
         return context
 
@@ -36,6 +39,7 @@ class RantDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         rant = context['rant']
+        context['rant'] = get_object_or_404(Rant, slug=self.kwargs['slug'])
         context['likes_count'] = rant.likes
 
         if self.request.user.is_authenticated:
