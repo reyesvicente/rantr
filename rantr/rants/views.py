@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Count
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
@@ -21,6 +23,7 @@ class RantListView(ListView):
     """
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
         rants = context['rants']
         liked_rants = Like.objects.values('rant').annotate(likes_count=Count('rant'))
 
@@ -69,20 +72,21 @@ class RantCreateView(LoginRequiredMixin, CreateView):
 
 
 def like_rant(request, slug):
-  rant = get_object_or_404(Rant, slug=slug)
-  rant.likes += 1
-  rant.save()
+    rant = get_object_or_404(Rant, slug=slug)
 
-  Like.objects.create(user=request.user, rant=rant)
 
-  return redirect('rants:detail', slug=slug)
+    if not Like.objects.filter(user=request.user, rant=rant).exists():
+        Like.objects.create(user=request.user, rant=rant)
+        rant.likes += 1
+        rant.save()
+    return redirect('rants:detail', slug=slug)
 
 
 def unlike_rant(request, slug):
-  rant = get_object_or_404(Rant, slug=slug)
-  rant.likes -= 1
-  rant.save()
+    rant = get_object_or_404(Rant, slug=slug)
+    rant.likes -= 1
+    rant.save()
 
-  Like.objects.filter(user=request.user, rant=rant).delete()
+    Like.objects.filter(user=request.user, rant=rant).delete()
 
-  return redirect('rants:detail', slug=slug)
+    return redirect('rants:detail', slug=slug)

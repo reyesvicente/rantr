@@ -6,15 +6,17 @@
     Add Rant
 </a><br /><br />
 {% for rant in rants %}
-    {% if user.is_authenticated %}
-        {% if user_like %}
-            <a href="{% url 'rants:rant-unlike' rant.slug %}">Unlike</a> 
-        {% else %}
-            <a href="{% url 'rants:rant-like' rant.slug %}">Like</a>
-        {% endif %}
-    {% endif %}<br />
     {{ rant.user.username }} : <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a><br>
     {{ rant.likes }} like{{ rant.likes|pluralize }} <br />
+        {% if user not in rant.likes.all %}
+            {% if user.is_authenticated %}
+                {% if not user_like %}
+                    <a href="{% url 'rants:rant-like' rant.slug %}">Like</a>
+                {% else %}
+                    <a href="{% url 'rants:rant-unlike' rant.slug %}">Unlike</a> 
+                {% endif %}
+            {% endif %}<br />
+        {% endif }
     {{ rant.created }}<br /> <br />
     {% if rant.image %}
         <img src="{{ rant.image.url }}"> <br />
