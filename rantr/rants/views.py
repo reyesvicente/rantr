@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
@@ -17,6 +18,16 @@ class RantListView(ListView):
     def get_queryset(self):
         return self.model.objects.filter(user=self.request.user)
     """
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        rants = context['rants']
+
+        liked_rants = Like.objects.values('rant').annotate(likes_count=Count('rant'))
+
+        for rant in rants:
+            rant.likes_count = liked_rants.get(rant_id=rant.uuid)['likes_count']
+
+        return context
 
 
 class RantDetailView(DetailView):
