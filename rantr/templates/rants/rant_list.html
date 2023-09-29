@@ -4,16 +4,21 @@
 <h1 class="text-center">Rant List</h1>
 <a class="btn btn-primary" href="{% url 'rants:create' %}" role="button">
     Add Rant
-</a>
+</a><br />
 {% for rant in rants %}
-    <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a><br>{{ rant.likes_count }} total likes<br> {{ rant.likes }} like{{ rant.likes|pluralize }} <br>{{ rant.created }}<br>
-    <br>
+    {{ request.user.username }} : <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a><br>
+    {{ rant.likes_count }} total likes<br> 
+    {{ rant.likes }} like{{ rant.likes|pluralize }} <br>
+    {{ rant.created }}<br>
+    {% if rant.image %}
+        <img src="{{ rant.image.url }}"> <br />
+    {% endif %}<br />
     {% if user.is_authenticated %}
         {% if user_like %}
             <a href="{% url 'rants:rant-unlike' rant.slug %}">Unlike</a> 
         {% else %}
             <a href="{% url 'rants:rant-like' rant.slug %}">Like</a>
         {% endif %}
-    {% endif %}
+    {% endif %}<br />
 {% endfor %}
 {% endblock content %}

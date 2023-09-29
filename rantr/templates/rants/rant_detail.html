@@ -4,7 +4,7 @@
 {{ rant.content }} <br>
 {{ rant.created }} <br>
 {% if rant.image %}
-  <img src="{{ rant.image.url }}"> 
+  <img src="{{ rant.image.url }}"> <br />
 {% endif %}
 <!-- LIKES -->
 {{ likes_count }} like{{ likes_count|pluralize }}

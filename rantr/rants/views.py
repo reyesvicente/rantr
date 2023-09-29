@@ -57,6 +57,9 @@ class RantCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        if form.cleaned_data['image']:
+            image = form.cleaned_data['image']
+            form.instance.image = image
         return super().form_valid(form)
 
 
