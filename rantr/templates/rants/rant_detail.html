@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{{ rant.content }}
+{{ rant.content }} <br>
+{{ rant.created }} <br>
+
 <!-- LIKES -->
 {{ likes_count }} like{{ likes_count|pluralize }}
     {% if user.is_authenticated %}

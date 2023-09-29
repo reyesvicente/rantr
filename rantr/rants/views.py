@@ -18,6 +18,7 @@ class RantListView(ListView):
         return self.model.objects.filter(user=self.request.user)
     """
 
+
 class RantDetailView(DetailView):
     model = Rant
 
@@ -35,7 +36,8 @@ class RantDetailView(DetailView):
 class RantCreateView(LoginRequiredMixin, CreateView):
     model = Rant
     fields = [
-        'content'
+        'content',
+        'image'
     ]
 
     def form_valid(self, form):

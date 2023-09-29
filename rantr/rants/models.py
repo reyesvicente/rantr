@@ -14,6 +14,7 @@ class Rant(TimeStampedModel):
     content = models.TextField(max_length=230)
     slug = AutoSlugField(populate_from='uuid')
     likes = models.PositiveIntegerField(default=0)
+    image = models.ImageField(upload_to='rants/images/', default=None, blank=True, null=True)
 
     class Meta:
         verbose_name = 'rant'
