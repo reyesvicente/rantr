@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -27,7 +27,7 @@ class RantListView(ListView):
         rants = context['rants']
         liked_rants = Like.objects.values('rant').annotate(likes_count=Count('rant'))
 
-        User = get_user_model() 
+        # User = get_user_model() 
 
         for rant in rants:
             rant_uuid = rant.uuid

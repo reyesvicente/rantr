@@ -19,6 +19,7 @@ class Rant(TimeStampedModel):
     class Meta:
         verbose_name = 'rant'
         verbose_name_plural = 'rants'
+        ordering = ['-created']
 
     def __str__(self):
         return self.content[:50]
