@@ -23,6 +23,7 @@ class RantListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
+        context['rants'] = self.model.objects.prefetch_related('user')
         rants = context['rants']
         liked_rants = Like.objects.values('rant').annotate(likes_count=Count('rant'))
 
@@ -35,7 +36,7 @@ class RantListView(ListView):
             else:
                 rant.likes_count = 0
 
-            rant.user = User.objects.get(id=rant.user_id)
+            # rant.user = User.objects.get(id=rant.user_id)
 
         return context
 
