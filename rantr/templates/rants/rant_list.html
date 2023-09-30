@@ -10,9 +10,9 @@
     {{ rant.likes }} like{{ rant.likes|pluralize }} <br />
         {% if user.is_authenticated %}
             {% if not user_like %}
-                <a href="{% url 'rants:rant-like' rant.slug %}">Like</a>
+                <a href="{% url 'likes:rant-like' rant.slug %}">Like</a>
             {% else %}
-                <a href="{% url 'rants:rant-unlike' rant.slug %}">Unlike</a> 
+                <a href="{% url 'likes:rant-unlike' rant.slug %}">Unlike</a> 
             {% endif %}
         {% endif %}<br />
     {{ rant.created }}<br /> <br />

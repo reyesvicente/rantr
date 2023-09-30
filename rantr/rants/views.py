@@ -1,8 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Count
-from django.http import HttpResponseRedirect
-from django.contrib import messages
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
     ListView,
@@ -10,7 +8,8 @@ from django.views.generic import (
     CreateView,
 )
 
-from rantr.rants.models import Rant, Like
+from rantr.rants.models import Rant 
+from rantr.likes.models import Like
 
 
 class RantListView(ListView):
@@ -71,22 +70,3 @@ class RantCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-def like_rant(request, slug):
-    rant = get_object_or_404(Rant, slug=slug)
-
-
-    if not Like.objects.filter(user=request.user, rant=rant).exists():
-        Like.objects.create(user=request.user, rant=rant)
-        rant.likes += 1
-        rant.save()
-    return redirect('rants:detail', slug=slug)
-
-
-def unlike_rant(request, slug):
-    rant = get_object_or_404(Rant, slug=slug)
-    rant.likes -= 1
-    rant.save()
-
-    Like.objects.filter(user=request.user, rant=rant).delete()
-
-    return redirect('rants:detail', slug=slug)

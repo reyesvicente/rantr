@@ -17,6 +17,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     path('rants/', include('rantr.rants.urls', namespace='rants')),
+    path('likes/', include('rantr.likes.urls', namespace='likes')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS

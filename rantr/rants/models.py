@@ -25,11 +25,3 @@ class Rant(TimeStampedModel):
     
     def get_absolute_url(self):
         return reverse("rants:detail", kwargs={"slug": self.slug})
-
-
-class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rant = models.ForeignKey(Rant, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = (('user', 'rant'))

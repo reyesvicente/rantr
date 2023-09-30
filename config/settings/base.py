@@ -94,6 +94,7 @@ LOCAL_APPS = [
     "rantr.users",
     # Your stuff: custom apps go here
     "rantr.rants",
+    "rantr.likes",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
