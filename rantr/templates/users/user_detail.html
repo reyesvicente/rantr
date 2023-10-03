@@ -24,6 +24,19 @@
       {% endif %}
     </div>
   </div>
+  {% if request.user != user %}
+
+    {% if request.user in user.followers.all %}
+
+      <a href="{% url 'users:unfollow_user' user.username %}">Unfollow</a>
+
+    {% else %}
+
+      <a href="{% url 'users:follow_user' user.username %}">Follow</a>
+
+    {% endif %}
+
+  {% endif %}
   {% if object == request.user %}
     <!-- Action buttons -->
     <div class="row">

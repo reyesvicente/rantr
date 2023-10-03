@@ -2,10 +2,26 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse
+from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
+from django.contrib.auth.decorators import login_required
 
 User = get_user_model()
+
+
+@login_required
+def follow_user(request, username):
+    user = User.objects.get(username=username)
+    request.user.following.add(user)
+    return redirect('users:detail', username)
+
+
+@login_required  
+def unfollow_user(request, username):
+    user = User.objects.get(username=username)
+    request.user.following.remove(user)
+    return redirect('users:detail', username)
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
