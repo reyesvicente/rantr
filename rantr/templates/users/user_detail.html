@@ -37,9 +37,9 @@
     {% endif %}
 
   {% endif %}
-  <p>Followings ({{ followings.0.followings_count }})</p> 
+  <p>Followings {{ followings.0.followings_count }}</p> 
 
-  <p>Followers ({{ followers.0.followers_count }})</p>
+  <p>Followers {{ followers.0.followers_count }}</p>
   {% if object == request.user %}
     <!-- Action buttons -->
     <div class="row">
