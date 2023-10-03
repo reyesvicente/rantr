@@ -27,36 +27,28 @@ def unfollow_user(request, username):
 
 class UserDetailView(LoginRequiredMixin, DetailView):
 
-  model = User
-  slug_field = "username"
-  slug_url_kwarg = "username"
+    model = User
+    slug_field = "username"
+    slug_url_kwarg = "username"
 
-  def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-    context = super().get_context_data(**kwargs)
+        viewed_user = self.get_object()
 
-    user = self.request.user
+        followings = viewed_user.following.all()
+        followers = viewed_user.followers.all()
 
-    followings = User.objects.annotate(followings_count=Count('following')).filter(following=user)
-    followers = User.objects.annotate(followers_count=Count('followers')).filter(followers=user)
+        followings_count = followings.count()
+        followers_count = followers.count()
 
-    if followings.exists():  
-      followings_count = followings.first().followings_count
-    else:
-      followings_count = 0
+        context['viewed_user'] = viewed_user
+        context['followings'] = followings
+        context['followers'] = followers
+        context['followings_count'] = followings_count
+        context['followers_count'] = followers_count
 
-    if followers.exists():
-      followers_count = followers.first().followers_count
-    else:
-      followers_count = 0
-
-    context['followings'] = followings
-    context['followers'] = followers 
-    context['followings_count'] = followings_count
-    context['followers_count'] = followers_count
-
-
-    return context
+        return context
 
 user_detail_view = UserDetailView.as_view()
 
