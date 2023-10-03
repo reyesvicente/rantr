@@ -5,7 +5,7 @@ from rantr.users.views import (
     user_redirect_view,
     user_update_view,
     follow_user,
-    unfollow_user
+    unfollow_user,
 )
 
 app_name = "users"

@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse
+from django.db.models import Count
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
@@ -25,10 +26,29 @@ def unfollow_user(request, username):
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
-    model = User
-    slug_field = "username"
-    slug_url_kwarg = "username"
 
+  model = User
+  slug_field = "username"
+  slug_url_kwarg = "username"
+
+  def get_context_data(self, **kwargs):
+
+    context = super().get_context_data(**kwargs)
+
+    user = self.request.user
+
+    followings = User.objects.annotate(followings_count=Count('following')).filter(following=user)
+    followers = User.objects.annotate(followers_count=Count('followers')).filter(followers=user)
+
+    followings_count = followings.first().followings_count
+    followers_count = followers.first().followers_count
+
+    context['followings'] = followings
+    context['followers'] = followers 
+    context['followings_count'] = followings_count
+    context['followers_count'] = followers_count
+
+    return context
 
 user_detail_view = UserDetailView.as_view()
 
