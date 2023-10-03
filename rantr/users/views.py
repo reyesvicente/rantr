@@ -50,8 +50,11 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     else:
       followers_count = 0
 
+    context['followings'] = followings
+    context['followers'] = followers 
     context['followings_count'] = followings_count
     context['followers_count'] = followers_count
+
 
     return context
 

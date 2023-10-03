@@ -29,17 +29,23 @@
     {% if request.user in user.followers.all %}
 
       <a href="{% url 'users:unfollow_user' user.username %}">Unfollow</a>
+      <p>Followings {{ followings|length }}</p>
+
+      <p>Followers {{ followers|length }}</p>
 
     {% else %}
 
       <a href="{% url 'users:follow_user' user.username %}">Follow</a>
+      <p>Followings {{ followings|length }}</p>
+
+      <p>Followers {{ followers|length }}</p>
 
     {% endif %}
 
   {% endif %}
-  <p>Followings {{ followings.0.followings_count }}</p> 
+  <p>Followings {{ followings|length }}</p>
 
-  <p>Followers {{ followers.0.followers_count }}</p>
+  <p>Followers {{ followers|length }}</p>
   {% if object == request.user %}
     <!-- Action buttons -->
     <div class="row">
