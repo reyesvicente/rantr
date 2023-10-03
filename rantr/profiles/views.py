@@ -19,7 +19,7 @@ def profile_list(request):
     context = {
         "profiles": profiles,
     }
-    return render(request, 'profiles:profile_list.html', context)
+    return render(request, 'profiles/profile_list.html', context)
 
 
 def profile(request, uuid):

@@ -30,9 +30,9 @@
     <div class="content">
         {% for profile in profiles.user.rants.all %}
             <div class="box">
-                {{ profile.body }} 
+                {{ profile.content }} 
                 <span class="is-small has-text-grey-light">
-                    ({{ profile.created_at }})
+                    ({{ profile.created }})
                 </span>
             </div>
         {% endfor %}
