@@ -29,7 +29,7 @@
     {% if request.user in user.followers.all %}
 
       <a href="{% url 'users:unfollow_user' user.username %}">Unfollow</a>
-      <p>Followings {{ followings|length }}</p>
+      <p>Following {{ followings|length }}</p>
 
       <p>Followers {{ followers|length }}</p>
 
@@ -43,7 +43,7 @@
     {% endif %}
 
   {% endif %}
-  <p>Followings {{ followings|length }}</p>
+  <p>Following {{ followings|length }}</p>
 
   <p>Followers {{ followers|length }}</p>
   {% if object == request.user %}
