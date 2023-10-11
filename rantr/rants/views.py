@@ -25,12 +25,17 @@ class RantListView(ListView):
         context['user'] = self.request.user
         context['rants'] = self.model.objects.prefetch_related('user')
         rants = context['rants']
-        liked_rants = Like.objects.values('rant').annotate(likes_count=Count('rant'))
-
-        # User = get_user_model() 
+        liked_rants = Like.objects.filter(
+            user=self.request.user,
+            rant__in=context['rants']
+        ).values('rant').annotate(likes_count=Count('rant'))
 
         for rant in rants:
             rant_uuid = rant.uuid
+            rant.user_liked = Like.objects.filter(
+                user=self.request.user, 
+                rant=rant
+            ).exists()
             if rant_uuid in liked_rants:
                 rant.likes_count = liked_rants[rant_uuid]['likes_count']
             else:
