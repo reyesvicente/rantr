@@ -42,11 +42,16 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         followings_count = followings.count()
         followers_count = followers.count()
 
+        likes_count = viewed_user.rant_set.aggregate(total_likes=Count('like'))['total_likes']
+
+
         context['viewed_user'] = viewed_user
         context['followings'] = followings
         context['followers'] = followers
         context['followings_count'] = followings_count
         context['followers_count'] = followers_count
+        context['rants'] = viewed_user.rant_set.all()
+        context['likes_count'] = likes_count
 
         return context
 
