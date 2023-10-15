@@ -18,6 +18,7 @@ urlpatterns = [
     # Your stuff: custom urls includes go here
     path('rants/', include('rantr.rants.urls', namespace='rants')),
     path('likes/', include('rantr.likes.urls', namespace='likes')),
+    path('notifications/', include('rantr.notifications.urls', namespace='notifications')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS
