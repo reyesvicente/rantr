@@ -27,14 +27,18 @@ class RantListView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        # Prefetch related user
+        context['rants'] = self.model.objects.prefetch_related('user')
         
+        # Get likes for these rants by this user
         liked_rants = Like.objects.filter(
             user=self.request.user,
             rant__in=context['rants']
         ).values('rant').annotate(likes_count=Count('rant'))
         
         rant_map = {rant.uuid: rant for rant in context['rants']}
-        
+
         for like in liked_rants:
             rant = rant_map[like['rant']]
             rant.user_liked = True
