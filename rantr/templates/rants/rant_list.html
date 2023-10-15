@@ -6,7 +6,7 @@
     Add Rant
 </a><br /><br />
 {% for rant in rants %}
-    {{ rant.user.username }} : <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a><br>
+    <a href="{% url 'users:detail' rant.user.username %}">{{ rant.user.username }}</a> : <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a><br>
     {{ rant.likes }} like{{ rant.likes|pluralize }} <br />
         {% if user.is_authenticated %}
             {% if rant.user_liked %}
