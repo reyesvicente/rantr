@@ -1,7 +1,8 @@
 # from django.contrib.auth import get_user_model
 from django.db.models import Count, Prefetch
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import AnonymousUser
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
     ListView,
@@ -37,13 +38,12 @@ class RantListView(ListView):
             rant__in=context['rants']
         ).values('rant').annotate(likes_count=Count('rant'))
         
-        rant_map = {rant.uuid: rant for rant in context['rants']}
+        rant_map = {rant.uid: rant for rant in context['rants']}
 
         for like in liked_rants:
             rant = rant_map[like['rant']]
             rant.user_liked = True
             rant.likes_count = like['likes_count']
-            
         return context
     
 
