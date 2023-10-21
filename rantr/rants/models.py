@@ -11,9 +11,9 @@ User = get_user_model()
 
 class Rant(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    uid = UUIDField(version=4, editable=False)
+    uuid = UUIDField(version=4, editable=False)
     content = models.TextField(max_length=230)
-    slug = AutoSlugField(populate_from='uid')
+    slug = AutoSlugField(populate_from='uuid')
     likes = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to='rants/images/', default=None, blank=True, null=True)
 
