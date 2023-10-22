@@ -16,6 +16,17 @@ from rantr.likes.models import Like
 User = get_user_model()
 
 
+class FollowingRantsView(LoginRequiredMixin, ListView):
+    template_name = 'rants/following_rants.html'
+    context_object_name = 'rants'
+
+    def get_queryset(self):
+        # Get rants for users that the logged in user follows
+        return Rant.objects.filter(
+            user__in=self.request.user.following.all()
+        )
+
+
 class RantListView(ListView):
 
     model = Rant
@@ -38,7 +49,7 @@ class RantListView(ListView):
             rant__in=context['rants']
         ).values('rant').annotate(likes_count=Count('rant'))
         
-        rant_map = {rant.uid: rant for rant in context['rants']}
+        rant_map = {rant.uuid: rant for rant in context['rants']}
 
         for like in liked_rants:
             rant = rant_map[like['rant']]
@@ -75,5 +86,3 @@ class RantCreateView(LoginRequiredMixin, CreateView):
             image = form.cleaned_data['image']
             form.instance.image = image
         return super().form_valid(form)
-
-
