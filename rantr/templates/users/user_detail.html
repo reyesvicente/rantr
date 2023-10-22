@@ -53,5 +53,12 @@
     </div>
     <!-- End Action buttons -->
   {% endif %}
+  {% for rant in rants %}
+  <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a> <br />
+  {{ rant.likes }} like{{ rant.likes|pluralize }} <br />
+    {% if rant.image %}
+      <img src="{{ rant.image.url }}">
+    {% endif %}<br />
+  {% endfor %}
 </div>
 {% endblock content %}

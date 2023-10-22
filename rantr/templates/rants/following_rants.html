@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for rant in rants %}
+    <div>
+        <a href="{% url 'users:detail' rant.user.username %}">{{ rant.user.username }}</a> : 
+        <p><a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a></p>
+        {{ rant.likes }} like{{ rant.likes|pluralize }} <br />
+        {% if rant.image %}
+            <img src="{{ rant.image.url }}"> <br />
+        {% endif %}<br />
+    </div>
+    {% endfor %}
+{% endblock content %}

@@ -1,12 +1,15 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic import ListView
 from django.urls import reverse
 from django.db.models import Count
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
 from django.contrib.auth.decorators import login_required
+
+from rantr.rants.models import Rant
 
 User = get_user_model()
 
@@ -42,11 +45,16 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         followings_count = followings.count()
         followers_count = followers.count()
 
+        likes_count = viewed_user.rant_set.aggregate(total_likes=Count('like'))['total_likes']
+
+
         context['viewed_user'] = viewed_user
         context['followings'] = followings
         context['followers'] = followers
         context['followings_count'] = followings_count
         context['followers_count'] = followers_count
+        context['rants'] = viewed_user.rant_set.all()
+        context['likes_count'] = likes_count
 
         return context
 
@@ -73,7 +81,7 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get_redirect_url(self):
-        return reverse("users:detail", kwargs={"username": self.request.user.username})
+        return reverse("rants:list", kwargs={"username": self.request.user.username})
 
 
 user_redirect_view = UserRedirectView.as_view()
