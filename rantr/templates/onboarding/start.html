@@ -1,0 +1,12 @@
+{% block content %}
+
+  <h1>Onboarding</h1>
+
+  <p>Welcome to the onboarding!</p>
+
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit">Complete Onboarding</button>
+  </form>
+
+{% endblock %}
