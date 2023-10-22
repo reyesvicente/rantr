@@ -1,23 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1 class="text-center">Rant List</h1>
-<a class="btn btn-primary" href="{% url 'rants:create' %}" role="button">
-    Add Rant
-</a><br /><br />
-{% for rant in rants %}
-    <a href="{% url 'users:detail' rant.user.username %}">{{ rant.user.username }}</a> : <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a><br>
-    {{ rant.likes }} like{{ rant.likes|pluralize }} <br />
-        {% if user.is_authenticated %}
-            {% if rant.user_liked %}
-                <a href="{% url 'likes:rant-unlike' rant.slug %}">Unlike</a> 
-            {% else %}
-                <a href="{% url 'likes:rant-like' rant.slug %}">Like</a>
-            {% endif %}
+    <h1 class="text-center">Rant List</h1>
+    <a class="btn btn-primary" href="{% url 'rants:create' %}" role="button">
+        Add Rant
+    </a><br /><br />
+    <a href="{% url 'rants:following' %}">For you</a> | <a href="{% url 'rants:list' %}">All rants</a> <br />
+    {% for rant in rants %}
+        <a href="{% url 'users:detail' rant.user.username %}">{{ rant.user.username }}</a> : <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a><br>
+        {{ rant.likes }} like{{ rant.likes|pluralize }} <br />
+        {{ rant.created }}<br /> <br />
+        {% if rant.image %}
+            <img src="{{ rant.image.url }}"> <br />
         {% endif %}<br />
-    {{ rant.created }}<br /> <br />
-    {% if rant.image %}
-        <img src="{{ rant.image.url }}"> <br />
-    {% endif %}<br />
-{% endfor %}<br />
+    {% endfor %}<br />
 {% endblock content %}

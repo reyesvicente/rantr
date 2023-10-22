@@ -1,6 +1,7 @@
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db import models
+
 from model_utils.models import TimeStampedModel
 from model_utils.fields import UUIDField
 from autoslug import AutoSlugField
@@ -10,7 +11,7 @@ User = get_user_model()
 
 class Rant(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    uuid = UUIDField(primary_key=True, version=4, editable=False)
+    uuid = UUIDField(version=4, editable=False)
     content = models.TextField(max_length=230)
     slug = AutoSlugField(populate_from='uuid')
     likes = models.PositiveIntegerField(default=0)

@@ -1,6 +1,8 @@
 # from django.contrib.auth import get_user_model
-from django.db.models import Count
-from django.shortcuts import get_object_or_404
+from django.db.models import Count, Prefetch
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
     ListView,
@@ -11,40 +13,50 @@ from django.views.generic import (
 from rantr.rants.models import Rant 
 from rantr.likes.models import Like
 
+User = get_user_model()
+
+
+class FollowingRantsView(LoginRequiredMixin, ListView):
+    template_name = 'rants/following_rants.html'
+    context_object_name = 'rants'
+
+    def get_queryset(self):
+        # Get rants for users that the logged in user follows
+        return Rant.objects.filter(
+            user__in=self.request.user.following.all()
+        )
+
 
 class RantListView(ListView):
+
     model = Rant
     context_object_name = 'rants'
-    """
-    For user-only posts on the feed
+
     def get_queryset(self):
-        return self.model.objects.filter(user=self.request.user)
-    """
+        return self.model.objects.prefetch_related(
+            Prefetch('user', queryset=User.objects.only('id'))  
+        )
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
+        # Prefetch related user
         context['rants'] = self.model.objects.prefetch_related('user')
-        rants = context['rants']
+        
+        # Get likes for these rants by this user
         liked_rants = Like.objects.filter(
             user=self.request.user,
             rant__in=context['rants']
         ).values('rant').annotate(likes_count=Count('rant'))
+        
+        rant_map = {rant.uuid: rant for rant in context['rants']}
 
-        for rant in rants:
-            rant_uuid = rant.uuid
-            rant.user_liked = Like.objects.filter(
-                user=self.request.user, 
-                rant=rant
-            ).exists()
-            if rant_uuid in liked_rants:
-                rant.likes_count = liked_rants[rant_uuid]['likes_count']
-            else:
-                rant.likes_count = 0
-
-            # rant.user = User.objects.get(id=rant.user_id)
-
+        for like in liked_rants:
+            rant = rant_map[like['rant']]
+            rant.user_liked = True
+            rant.likes_count = like['likes_count']
         return context
-
+    
 
 class RantDetailView(DetailView):
     model = Rant
@@ -74,5 +86,3 @@ class RantCreateView(LoginRequiredMixin, CreateView):
             image = form.cleaned_data['image']
             form.instance.image = image
         return super().form_valid(form)
-
-
