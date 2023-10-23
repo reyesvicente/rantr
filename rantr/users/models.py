@@ -1,5 +1,5 @@
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField, ManyToManyField, BooleanField
+from django.db.models import CharField, ManyToManyField, BooleanField, ImageField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -12,6 +12,8 @@ class User(AbstractUser):
     """
     following = ManyToManyField('self', symmetrical=False, related_name='followers')
     is_onboarded = BooleanField(default=False)
+    location = CharField(max_length=50, default="", blank=True)
+    profile_picture = ImageField(upload_to='users/profile_picture/', default=None, blank=True, null=True)
 
     def get_absolute_url(self) -> str:
         """Get URL for user's detail view.
