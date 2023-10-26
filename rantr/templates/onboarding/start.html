@@ -2,12 +2,12 @@
 
   <h1>Onboarding</h1>
 
-  <p>Welcome to the onboarding!</p>
-  {{ user.username }}
+  <p>Welcome to the Rantr!</p>
 
-  <form method="POST">
+  <form method="post">
     {% csrf_token %}
-    <button class="btn btn-primary" type="submit">Complete Onboarding</button>
+
+    <button class="btn btn-primary" type="submit">Agree to Terms of Use</button>
   </form>
 
 {% endblock %}
