@@ -1,5 +1,5 @@
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField, ManyToManyField
+from django.db.models import CharField, ManyToManyField, BooleanField, ImageField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -10,12 +10,10 @@ class User(AbstractUser):
     If adding fields that need to be filled at user signup,
     check forms.SignupForm and forms.SocialSignupForms accordingly.
     """
-
-    # First and last name do not cover name patterns around the globe
-    name = CharField(_("Name of User"), blank=True, max_length=255)
-    first_name = None  # type: ignore
-    last_name = None  # type: ignore
     following = ManyToManyField('self', symmetrical=False, related_name='followers')
+    is_onboarded = BooleanField(default=False)
+    location = CharField(max_length=50, default="", blank=True)
+    profile_picture = ImageField(upload_to='users/profile_picture/', default=None, blank=True, null=True)
 
     def get_absolute_url(self) -> str:
         """Get URL for user's detail view.
