@@ -1,0 +1,13 @@
+{% block content %}
+
+  <h1>Onboarding</h1>
+
+  <p>Welcome to the Rantr!</p>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <button class="btn btn-primary" type="submit">Agree to Terms of Use</button>
+  </form>
+
+{% endblock %}
