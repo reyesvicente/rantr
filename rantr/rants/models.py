@@ -11,7 +11,7 @@ User = get_user_model()
 
 class Rant(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    uuid = UUIDField(version=4, editable=False)
+    uuid = UUIDField(primary_key=True, version=4, editable=False)
     content = models.TextField(max_length=230)
     slug = AutoSlugField(populate_from='uuid')
     likes = models.PositiveIntegerField(default=0)

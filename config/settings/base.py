@@ -95,6 +95,7 @@ LOCAL_APPS = [
     # Your stuff: custom apps go here
     "rantr.rants",
     "rantr.likes",
+    "rantr.onboarding",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -150,6 +151,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "rantr.onboarding.middleware.OnboardingMiddleware"
 ]
 
 # STATIC
