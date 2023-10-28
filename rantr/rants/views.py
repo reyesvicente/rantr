@@ -1,8 +1,7 @@
-# from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model
 from django.db.models import Count, Prefetch
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
     ListView,
@@ -27,7 +26,7 @@ class FollowingRantsView(LoginRequiredMixin, ListView):
         )
 
 
-class RantListView(ListView):
+class RantListView(LoginRequiredMixin, ListView):
 
     model = Rant
     context_object_name = 'rants'
