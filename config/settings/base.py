@@ -94,6 +94,7 @@ LOCAL_APPS = [
     "rantr.users",
     # Your stuff: custom apps go here
     "rantr.rants",
+    "rantr.comments",
     "rantr.likes",
     "rantr.onboarding",
 ]
