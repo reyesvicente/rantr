@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse
 from django.db.models import Count
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
 from django.contrib.auth.decorators import login_required
@@ -25,6 +25,30 @@ def unfollow_user(request, username):
     user = User.objects.get(username=username)
     request.user.following.remove(user)
     return redirect('users:detail', username)
+
+
+def user_followers(request, username):
+    user = User.objects.get(username=username)
+    followers = user.followers.all()
+    
+    context = {
+        'user': user,
+        'followers': followers,
+    }
+    
+    return render(request, 'users/user_followers.html', context)
+
+
+def user_following(request, username):
+    user = User.objects.get(username=username)
+    following = user.following.all()
+    
+    context = {
+        'user': user,
+        'following': following,
+    }
+    
+    return render(request, 'users/user_following.html', context)
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
