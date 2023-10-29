@@ -40,6 +40,8 @@
   <p>Following {{ followings|length }}</p>
 
   <p>Followers {{ followers|length }}</p>
+  <a href="{% url 'users:user_followers' user.username %}">View Followers</a>
+  <a href="{% url 'users:user_following' user.username %}">View Following</a>
   {% if object == request.user %}
     <!-- Action buttons -->
     <div class="row">
