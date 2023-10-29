@@ -16,4 +16,28 @@
             <a href="{% url 'likes:rant-like' rant.slug %}">Like</a>
         {% endif %}
     {% endif %}
+    {% if comment > 0 %}
+        <h1>Comments:</h1>
+    {% endif %}
+    {% for comment in rant.comment_set.all %}
+        <p>{{ comment.user.username }}</p>
+        <p>{{ comment.created }}</p>
+        <p>{{ comment.content }}</p>
+        
+        {% for child in comment.children.all %}
+            <p>{{ comment.user.username }}</p>
+            <p>{{ comment.created }}</p>
+            <p class="child">{{ child.content }}</p>
+        {% endfor %}
+        
+    {% endfor %}
+  
+    <form method="post" onsubmit="this.method='POST'" action="{% url 'comments:add_comment' rant.uuid %}">
+            {% csrf_token %}
+            
+            <input type="text" name="content">
+            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+            
+            <input class="btn btn-primary" type="submit" value="Reply">
+        </form>
 {% endblock content %}
