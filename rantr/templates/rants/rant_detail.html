@@ -8,7 +8,8 @@
   <img src="{{ rant.image.url }}"> <br />
 {% endif %}
 <!-- LIKES -->
-{{ likes_count }} like{{ likes_count|pluralize }}
+<a href="{% url 'likes:rant-likes' rant.slug %}">{{ likes_count }} like{{ likes_count|pluralize }}</a>
+
     {% if user.is_authenticated %}
         {% if user_like %}
             <a href="{% url 'likes:rant-unlike' rant.slug %}">Unlike</a> 
@@ -20,7 +21,7 @@
         <h1>Comments:</h1>
     {% endif %}
     {% for comment in rant.comment_set.all %}
-        <p>{{ comment.user.username }}</p>
+        <p><a href="{% url 'users:detail' comment.user.username %}">{{ comment.user.username }}</a></p>
         <p>{{ comment.created }}</p>
         <p>{{ comment.content }}</p>
         
