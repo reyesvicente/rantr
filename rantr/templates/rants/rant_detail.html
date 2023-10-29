@@ -10,35 +10,71 @@
 <!-- LIKES -->
 <a href="{% url 'likes:rant-likes' rant.slug %}">{{ likes_count }} like{{ likes_count|pluralize }}</a>
 
-    {% if user.is_authenticated %}
-        {% if user_like %}
-            <a href="{% url 'likes:rant-unlike' rant.slug %}">Unlike</a> 
-        {% else %}
-            <a href="{% url 'likes:rant-like' rant.slug %}">Like</a>
-        {% endif %}
+{% if user.is_authenticated %}
+    {% if user_like %}
+        <a href="{% url 'likes:rant-unlike' rant.slug %}">Unlike</a> 
+    {% else %}
+        <a href="{% url 'likes:rant-like' rant.slug %}">Like</a>
     {% endif %}
-    {% if comment > 0 %}
-        <h1>Comments:</h1>
-    {% endif %}
-    {% for comment in rant.comment_set.all %}
-        <p><a href="{% url 'users:detail' comment.user.username %}">{{ comment.user.username }}</a></p>
-        <p>{{ comment.created }}</p>
-        <p>{{ comment.content }}</p>
-        
-        {% for child in comment.children.all %}
-            <p>{{ comment.user.username }}</p>
-            <p>{{ comment.created }}</p>
-            <p class="child">{{ child.content }}</p>
+    <!-- Comment form for new comments -->
+    <form method="post" onsubmit="this.method='POST'" action="{% url 'comments:add_comment' rant.uuid %}" class="mt-3">
+        {% csrf_token %}
+        <div class="mb-3">
+            <input type="text" name="content" class="form-control" placeholder="Add a comment">
+        </div>
+        <input type="hidden" name="parent_id" value="">
+        <button class="btn btn-primary" type="submit">Comment</button>
+    </form>
+{% endif %}
+{% if rant.comment_set.count > 0 %}
+    <h1>Comments:</h1>
+    <ul class="comments">
+        {% for comment in rant.comment_set.all %}
+            {% if not comment.parent %}  {# Skip displaying parent comments here #}
+                <li class="comment">
+                    <p><a href="{% url 'users:detail' comment.user.username %}">{{ comment.user.username }}</a></p>
+                    <p>{{ comment.created }}</p>
+                    <p>{{ comment.content }}</p>
+                    <form method="post" onsubmit="this.method='POST'" action="{% url 'comments:add_comment' rant.uuid %}" class="mt-3">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <input type="text" name="content" class="form-control" placeholder="Reply to comment">
+                        </div>
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <button class="btn btn-primary" type="submit">Reply</button>
+                    </form>
+                    {% if comment.comment_set.count > 0 %}
+                        <ul class="child-comments">
+                            {% for child in comment.comment_set.all %}
+                                <li class="comment">
+                                    <p><a href="{% url 'users:detail' child.user.username %}">{{ child.user.username }}</a></p>
+                                    <p>{{ child.created }}</p>
+                                    <p class="child">{{ child.content }}</p>
+                                </li>
+                                <form method="post" onsubmit="this.method='POST'" action="{% url 'comments:add_comment' rant.uuid %}" class="mt-3">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <input type="text" name="content" class="form-control" placeholder="Reply to comment">
+                                    </div>
+                                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                    <button class="btn btn-primary" type="submit">Reply</button>
+                                </form>
+                            {% endfor %}
+                        </ul>
+                        
+                        <!-- Reply form for parent comments, outside the loop for child comments -->
+                        <form method="post" onsubmit="this.method='POST'" action="{% url 'comments:add_comment' rant.uuid %}" class="mt-3">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <input type="text" name="content" class="form-control" placeholder="Reply to comment">
+                            </div>
+                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                            <button class="btn btn-primary" type="submit">Reply</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% endif %}
         {% endfor %}
-        
-    {% endfor %}
-  
-    <form method="post" onsubmit="this.method='POST'" action="{% url 'comments:add_comment' rant.uuid %}">
-            {% csrf_token %}
-            
-            <input type="text" name="content">
-            <input type="hidden" name="parent_id" value="{{ comment.id }}">
-            
-            <input class="btn btn-primary" type="submit" value="Reply">
-        </form>
+    </ul>
+{% endif %}
 {% endblock content %}
