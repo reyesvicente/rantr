@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 
 from rantr.likes.models import Like
 from rantr.rants.models import Rant
@@ -23,3 +23,16 @@ def unlike_rant(request, slug):
     Like.objects.filter(user=request.user, rant=rant).delete()
 
     return redirect('rants:detail', slug=slug)
+
+
+def rant_likes_list(request, slug):
+    rant = get_object_or_404(Rant, slug=slug)
+    likes = Like.objects.filter(rant=rant)
+    
+    context = {
+        'rant': rant,
+        'likes': likes,
+    }
+    
+    return render(request, 'likes/rants_likes_list.html', context)
+
