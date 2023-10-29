@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Users who liked this rant:</h1>
+<ul>
+    {% for like in likes %}
+        <li>{{ like.user.username }}</li>
+    {% empty %}
+        <li>No one has liked this rant yet.</li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}
