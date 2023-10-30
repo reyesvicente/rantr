@@ -37,9 +37,18 @@
     {% endif %}
 
   {% endif %}
-  <p>Following <a href="{% url 'users:user_following' user.username %}">{{ followings|length }}</a></p>
+  {% if followings|length > 0 %}
+    <p>Following <a href="{% url 'users:user_following' user.username %}">{{ followings|length }}</a></p>
+  {% else %}
+    <p>Following {{ followings|length }}</p>
+  {% endif %}
 
-  <p>Followers <a href="{% url 'users:user_followers' user.username %}">{{ followers|length }}</a></p>
+  {% if followers|length > 0 %}
+    <p>Followers <a href="{% url 'users:user_followers' user.username %}">{{ followers|length }}</a></p>
+  {% else %}
+    <p>Followers {{ followers|length }}</p>
+  {% endif %}
+
   {% if object == request.user %}
     <!-- Action buttons -->
     <div class="row">
