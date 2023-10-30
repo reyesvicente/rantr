@@ -16,11 +16,11 @@ class Rant(TimeStampedModel):
     slug = AutoSlugField(populate_from='uuid')
     likes = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to='rants/images/', default=None, blank=True, null=True)
+    popularity_score = models.DecimalField(default=0.0, max_digits=10, decimal_places=2)
 
     class Meta:
         verbose_name = 'rant'
         verbose_name_plural = 'rants'
-        ordering = ['-created']
 
     def __str__(self):
         return self.content[:50]
