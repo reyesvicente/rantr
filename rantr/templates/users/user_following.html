@@ -5,7 +5,7 @@
     
 <ul>
     {% for followed_user in following %}
-        <li>{{ followed_user.username }}</li>
+        <li><a href="{% url 'users:detail' followed_user.username %}">{{ followed_user.username }}</a></li>
     {% endfor %}
 </ul>
 {% endblock content %}

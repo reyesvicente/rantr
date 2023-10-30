@@ -4,7 +4,7 @@
 <h1>Users who liked this rant:</h1>
 <ul>
     {% for like in likes %}
-        <li>{{ like.user.username }}</li>
+        <li><a href="{% url 'users:detail' like.user.username %}">{{ like.user.username }}</a></li>
     {% empty %}
         <li>No one has liked this rant yet.</li>
     {% endfor %}

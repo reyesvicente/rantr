@@ -32,9 +32,19 @@ class RantListView(LoginRequiredMixin, ListView):
     context_object_name = 'rants'
 
     def get_queryset(self):
-        return self.model.objects.prefetch_related(
-            Prefetch('user', queryset=User.objects.only('id'))  
-        )
+        # Calculate popularity score for each rant and order by it
+        like_weight = [1, 0, 0, 0, 0, 4, 1, 2, 0, 0]
+        comment_weight = [2, 0, 0, 0, 0, 1, 4, 2, 0, 0]  # Adjust the weights based on your preference
+
+        rants = Rant.objects.all()
+        for rant in rants:
+            number_of_likes = rant.likes
+            number_of_comments = rant.comment_set.count()
+            popularity_score = (number_of_likes * like_weight) + (number_of_comments * comment_weight)
+            rant.popularity_score = popularity_score
+
+        # Order rants by popularity score in descending order
+        return rants.order_by('-popularity_score')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
