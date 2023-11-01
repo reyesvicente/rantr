@@ -20,6 +20,7 @@ urlpatterns = [
     path('likes/', include('rantr.likes.urls', namespace='likes')),
     path('onboarding/', include('rantr.onboarding.urls', namespace='onboarding')),
     path('comments/', include('rantr.comments.urls', namespace="comments")),
+    path('', include('rantr.core.urls', namespace='core')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS
