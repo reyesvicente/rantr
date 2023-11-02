@@ -24,13 +24,16 @@ class Rant(TimeStampedModel):
 
     def __str__(self):
         return self.content[:50]
-    
-    def get_absolute_url(self):
-        return reverse("rants:detail", kwargs={"slug": self.slug})
 
     def save(self, *args, **kwargs):
         # Calculate popularity_score here
-        like_weight = [1, 0, 0, 7, 0, 4, 1, 2, 0, 0]
-        comment_weight = [2, 0, 3, 0, 0, 1, 4, 2, 0, 0]
+        like_weight = 4.0
+        comment_weight = 5.0
         self.popularity_score = (self.likes * like_weight) + (self.comment_set.count() * comment_weight)
         super(Rant, self).save(*args, **kwargs)
+
+    def update_popularity_score(self):
+        self.save()
+
+    def get_absolute_url(self):
+        return reverse("rants:detail", kwargs={"slug": self.slug})
