@@ -1,5 +1,4 @@
 <div class="notification">
-    <small>{{ notification.actor }} {{ notification.verb }} 
-        <a href="{{ notification.target.get_absolute_url }}">{{ notification.target }}</a>
+    <small><a href="{{ notification.target.get_absolute_url }}">{{ notification.actor }} {{ notification.verb }} </a>
     </small>
 </div>
