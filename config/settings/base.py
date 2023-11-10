@@ -88,6 +88,7 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
+    "notifications",
 ]
 
 LOCAL_APPS = [
@@ -97,6 +98,7 @@ LOCAL_APPS = [
     "rantr.comments",
     "rantr.likes",
     "rantr.onboarding",
+    "rantr.core",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

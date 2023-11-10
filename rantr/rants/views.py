@@ -33,8 +33,8 @@ class RantListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         # Calculate popularity score for each rant and order by it
-        like_weight = [1, 0, 0, 7, 0, 4, 1, 2, 0, 0]
-        comment_weight = [2, 0, 3, 0, 0, 1, 4, 2, 0, 0]  # Adjust the weights based on your preference
+        like_weight = 1.42
+        comment_weight = 2.0  # Adjust the weights based on your preference
 
         rants = Rant.objects.all()
         for rant in rants:
