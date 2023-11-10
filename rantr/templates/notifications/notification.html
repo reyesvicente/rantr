@@ -1,0 +1,5 @@
+<div class="notification">
+    <small><a href="{{ notification.target.get_absolute_url }}">{{ notification.actor }} {{ notification.verb }} </a>
+    </small>
+    <a href="{% url 'notifications:mark_all_as_read' %}">Mark all as read</a>
+</div>

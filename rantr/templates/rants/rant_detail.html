@@ -8,7 +8,12 @@
   <img src="{{ rant.image.url }}"> <br />
 {% endif %}
 <!-- LIKES -->
-<a href="{% url 'likes:rant-likes' rant.slug %}">{{ likes_count }} like{{ likes_count|pluralize }}</a>
+{% if likes_count > 0 %}
+    <a href="{% url 'likes:rant-likes' rant.slug %}">{{ likes_count }} like{{ likes_count|pluralize }}</a>
+{% else %}
+    {{ likes_count }} like{{ likes_count|pluralize }}
+{% endif %}
+
 
 {% if user.is_authenticated %}
     {% if user_like %}

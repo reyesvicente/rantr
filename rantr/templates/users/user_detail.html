@@ -1,27 +1,24 @@
 {% extends "base.html" %}
 
-{% load static %}
+{% load static notifications_tags %}
 
 {% block title %}
-  User: 
-  
-    {{ object.username }}
-  
-  
+  User: {{ object.username }}
 {% endblock title %}
 {% block content %}
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
         <h2>
-        
-        
           {{ object.username }}
-        
       </h2>
-      {% if object.name %}
-        <p>{{ object.name }}</p>
+      {% if object.first_name %}
+        <p>{{ object.get_full_name }}</p>
       {% endif %}
+      {% if object.profile_picture %}
+        <img src="{{ object.profile_picture.url }}">
+      {% endif %}
+      <p>{{ object.bio }}</p>
     </div>
   </div>
   {% if request.user != user %}

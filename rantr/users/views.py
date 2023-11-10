@@ -8,6 +8,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
 from django.contrib.auth.decorators import login_required
 
+from notifications.signals import notify
+
 from rantr.rants.models import Rant
 
 User = get_user_model()
@@ -17,6 +19,7 @@ User = get_user_model()
 def follow_user(request, username):
     user = User.objects.get(username=username)
     request.user.following.add(user)
+    notify.send(request.user, recipient=user, verb='started following you')
     return redirect('users:detail', username)
 
 
@@ -86,7 +89,7 @@ user_detail_view = UserDetailView.as_view()
 
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User
-    fields = ["first_name", "last_name", 'location', "email", "profile_picture",]
+    fields = ["first_name", "last_name", 'location', "email", "profile_picture", "bio"]
     success_message = _("Information successfully updated")
 
     def get_success_url(self):
