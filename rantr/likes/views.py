@@ -1,5 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 
+from notifications.signals import notify
+
 from rantr.likes.models import Like
 from rantr.rants.models import Rant
 
@@ -12,6 +14,7 @@ def like_rant(request, slug):
         Like.objects.create(user=request.user, rant=rant)
         rant.likes += 1
         rant.save()
+    notify.send(request.user, recipient=rant.user, verb='liked your rant', action_object=rant, target=rant) 
     return redirect('rants:detail', slug=slug)
 
 

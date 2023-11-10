@@ -1,4 +1,7 @@
 from django.shortcuts import redirect, get_object_or_404
+
+from notifications.signals import notify
+
 from rantr.comments.models import Comment
 from rantr.rants.models import Rant
 
@@ -20,5 +23,6 @@ def add_comment(request, rant_uuid):
             content=content,
             parent=parent,
         )
+    notify.send(request.user, recipient=rant.user, verb='commented on your rant', action_object=rant, target=rant)
 
     return redirect('rants:detail', rant.uuid)
