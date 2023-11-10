@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load notifications_tags %}
+
+{% block content %}
+{% notifications_unread as unread_count %}
+
+{% for notification in notifications_all %}
+  <a href="{{ notification.data.action_object.get_absolute_url }}">
+    {{ notification.actor }} {{ notification.verb }} 
+  </a>
+{% empty %}
+   No notifications
+{% endfor %}
+
+<a href="{% url 'notifications:mark_all_as_read' %}">Mark all as read</a>
+{% endblock content %}
