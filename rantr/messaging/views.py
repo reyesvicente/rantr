@@ -14,11 +14,15 @@ User = get_user_model()
 
 class ConversationListView(LoginRequiredMixin, ListView):
     model = Message
-    context_object_name = 'messages'
+    context_object_name = 'conversations'
     template_name = "messaging/conversation_list.html"
 
     def get_queryset(self):
-        return self.request.user.conversations.prefetch_related('messages').all()
+        # Adjust this queryset based on your model structure
+        return Conversation.objects.all()
+
+    def get_queryset(self):
+        return self.request.user.conversations.all()
 
 
 class ConversationDetailView(LoginRequiredMixin, FormView, DetailView):

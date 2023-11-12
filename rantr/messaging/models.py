@@ -18,6 +18,9 @@ class Conversation(TimeStampedModel):
     def get_absolute_url(self):
         return reverse("messaging:conversation_detail", kwargs={"pk": self.id})
 
+    def __str__(self):
+        return " and ".join(participant.username for participant in self.participants.all())
+
 
 class Message(TimeStampedModel):
     uuid = UUIDField(primary_key=True, version=4, editable=False)

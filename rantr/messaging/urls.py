@@ -4,7 +4,7 @@ from rantr.messaging.views import ConversationListView, ConversationDetailView, 
 
 app_name = 'messaging'
 urlpatterns = [
-    path('conversations/', ConversationListView.as_view(), name='conversation_list'),
-    path('conversations/<int:pk>/', ConversationDetailView.as_view(), name='conversation_detail'),
+    path('', ConversationListView.as_view(), name='conversation_list'),
+    path('<int:pk>/', ConversationDetailView.as_view(), name='conversation_detail'),
     path('send-message/<str:username>/', SendMessageView.as_view(), name='send_message'),
 ]

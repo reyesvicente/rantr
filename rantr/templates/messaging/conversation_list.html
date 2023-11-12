@@ -2,18 +2,11 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h2>Your Inbox</h2>
+<h2>Inbox</h2>
 
 <ul>
   {% for conversation in conversations %}
-    <h2><a href="{% url 'messaging:conversation_detail' pk=conversation.id %}">{{ conversation }}</a></h2>
-    {% if conversation.messages.exists %}
-        {% for message in conversation.messages.all %}
-            <p>{{ message.sender.username }}: {{ message.content }}</p>
-        {% endfor %}
-    {% else %}
-        <p>No messages in this conversation.</p>
-    {% endif %}
+    <p><a href="{% url 'messaging:conversation_detail' pk=conversation.id %}">{{ conversation }}</a></p>
   {% endfor %}
 </ul>
 {% endblock content %}
