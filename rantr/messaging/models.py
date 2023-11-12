@@ -22,7 +22,7 @@ class Conversation(TimeStampedModel):
         return " and ".join(participant.username for participant in self.participants.all())
 
 
-class Message(TimeStampedModel):
+class DirectMessage (TimeStampedModel):
     uuid = UUIDField(primary_key=True, version=4, editable=False)
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
     sender = models.ForeignKey(User, on_delete=models.CASCADE)

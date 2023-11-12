@@ -5,8 +5,8 @@
 <h2>{{ conversation }}</h2>
 
 <div>
-  {% for message in messages %}
-    <p>{{ message.sender.username }}: {{ message.content }}</p>
+  {% for dm in direct_messages %}
+    <p>{{ dm.sender.username }}: {{ dm.content }}</p>
   {% endfor %}
 </div>
 

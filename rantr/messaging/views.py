@@ -6,14 +6,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from notifications.signals import notify
 
-from rantr.messaging.models import Message, Conversation
+from rantr.messaging.models import DirectMessage, Conversation
 from rantr.messaging.forms import MessageForm
 
 User = get_user_model()
 
 
 class ConversationListView(LoginRequiredMixin, ListView):
-    model = Message
+    model = DirectMessage
     context_object_name = 'conversations'
     template_name = "messaging/conversation_list.html"
 
@@ -34,11 +34,11 @@ class ConversationDetailView(LoginRequiredMixin, FormView, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.object:
-            context['messages'] = self.object.messages.all()
+            context['direct_messages'] = self.object.messages.all()
             context['form'] = MessageForm(self.request.POST or None)
         else:
             # Handle the case where the conversation is not found
-            context['messages'] = []
+            context['direct_messages'] = []
             context['form'] = MessageForm()
 
         return context
