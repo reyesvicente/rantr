@@ -3,6 +3,7 @@
 {% block content %}
     {% for rant in rants %}
     <div>
+        <a href="{% url 'rants:following' %}">For you</a> | <a href="{% url 'rants:list' %}">All rants</a> <br />
         <a href="{% url 'users:detail' rant.user.username %}">{{ rant.user.username }}</a> : 
         <p><a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a></p>
         {{ rant.likes }} like{{ rant.likes|pluralize }} <br />

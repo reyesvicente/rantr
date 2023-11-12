@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h2>Inbox</h2>
+
+<ul>
+  {% for conversation in conversations %}
+    <p><a href="{% url 'messaging:conversation_detail' pk=conversation.id %}">{{ conversation }}</a></p>
+  {% endfor %}
+</ul>
+{% endblock content %}
