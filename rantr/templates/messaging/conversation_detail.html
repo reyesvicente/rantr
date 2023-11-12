@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h2>{{ conversation }}</h2>
+
+<div>
+  {% for dm in direct_messages %}
+    <p>{{ dm.sender.username }}: {{ dm.content }}</p>
+  {% endfor %}
+</div>
+
+<form method="post" action="{% url 'messaging:conversation_detail' pk=conversation.id %}">
+  {% csrf_token %}
+  {{ form|crispy }}
+  <button class="btn btn-primary" type="submit">Send</button>
+</form>
+
+{% endblock content %}

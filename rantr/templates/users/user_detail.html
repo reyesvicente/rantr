@@ -22,7 +22,7 @@
     </div>
   </div>
   {% if request.user != user %}
-
+  <a class="btn btn-primary" href="{% url 'messaging:send_message' username=user.username %}">Send Message</a>
     {% if request.user in user.followers.all %}
 
       <a href="{% url 'users:unfollow_user' user.username %}">Unfollow</a>
