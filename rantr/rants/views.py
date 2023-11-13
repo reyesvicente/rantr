@@ -35,14 +35,16 @@ class RantListView(LoginRequiredMixin, ListView):
         # Calculate popularity score for each rant and order by it
         like_weight = 1.42
         comment_weight = 2.0  # Adjust the weights based on your preference
+        impression_weight = 0.24
 
         rants = Rant.objects.all()
         for rant in rants:
             number_of_likes = rant.likes
             number_of_comments = rant.comment_set.count()
-            popularity_score = (number_of_likes * like_weight) + (number_of_comments * comment_weight)
+            number_of_impressions = rant.views
+            popularity_score = (number_of_likes * like_weight) + (number_of_comments * comment_weight) + (number_of_impressions * impression_weight)
             rant.popularity_score = popularity_score
-
+        
         # Order rants by popularity score in descending order
         return rants.order_by('-popularity_score')
     

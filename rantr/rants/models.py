@@ -30,7 +30,8 @@ class Rant(TimeStampedModel):
         # Calculate popularity_score here
         like_weight = 1.42
         comment_weight = 2.0
-        self.popularity_score = (self.likes * like_weight) + (self.comment_set.count() * comment_weight)
+        impression_weight = 0.24
+        self.popularity_score = (self.likes * like_weight) + (self.comment_set.count() * comment_weight) + (self.views * impression_weight)
         super(Rant, self).save(*args, **kwargs)
 
     def update_popularity_score(self):
