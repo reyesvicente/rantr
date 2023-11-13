@@ -1,8 +1,8 @@
 from django import forms
-from rantr.messaging.models import DirectMessage
+from .models import Message
 
 
 class MessageForm(forms.ModelForm):
     class Meta:
-        model = DirectMessage
+        model = Message
         fields = ['content']
