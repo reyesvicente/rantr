@@ -2,10 +2,10 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h1>Conversation with {{ conversation.participants.all|join:' and ' }}</h1>
+<h1>Conversation between {{ conversation.participants.all|join:' and ' }}</h1>
 <ul>
     {% for message in conversations %}
-        <li>
+        <li class="unstyled">
             <strong>{{ message.sender.username }}</strong>:
             {{ message.content }} - {{ message.created }}
         </li>
