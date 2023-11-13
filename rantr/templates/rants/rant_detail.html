@@ -4,6 +4,9 @@
 <a href="{% url 'users:detail' rant.user.username %}">{{ rant.user.username }}</a><br />
 {{ rant.content }} <br />
 {{ rant.created }} <br />
+{% if rant.views %}
+    views : {{ rant.views }}<br />
+{% endif %}
 {% if rant.image %}
   <img src="{{ rant.image.url }}"> <br />
 {% endif %}
