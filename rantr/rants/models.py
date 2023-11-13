@@ -17,6 +17,7 @@ class Rant(TimeStampedModel):
     likes = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to='rants/images/', default=None, blank=True, null=True)
     popularity_score = models.DecimalField(default=0.0, max_digits=10, decimal_places=2)
+    views = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name = 'rant'
@@ -33,6 +34,10 @@ class Rant(TimeStampedModel):
         super(Rant, self).save(*args, **kwargs)
 
     def update_popularity_score(self):
+        self.save()
+
+    def increment_views(self):
+        self.views += 1
         self.save()
 
     def get_absolute_url(self):

@@ -73,6 +73,7 @@ class RantDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         rant = context['rant']
+        rant.increment_views()  # Increment views when the rant is viewed
         context['rant'] = get_object_or_404(Rant, slug=self.kwargs['slug'])
         context['likes_count'] = rant.likes
 
