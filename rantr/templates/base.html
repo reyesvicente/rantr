@@ -94,7 +94,7 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                   <li class="dropdown-header">Unread Notifications</li>
                         {% for notification in request.user.notifications.unread %}
-                            <li>{% include 'notifications/notification.html' %}</li>
+                            <li>{% include 'notifications/list.html' %}</li>
                         {% endfor %}
                 </ul>
               </div>                
