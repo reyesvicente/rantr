@@ -19,7 +19,7 @@ User = get_user_model()
 def follow_user(request, username):
     user = User.objects.get(username=username)
     request.user.following.add(user)
-    notify.send(request.user, recipient=user, verb='started following you')
+    notify.send(request.user, recipient=user, action_object=user, verb='started following you')
     return redirect('users:detail', username)
 
 
