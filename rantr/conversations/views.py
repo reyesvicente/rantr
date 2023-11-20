@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
+
+from notifications.signals import notify
+
 from rantr.conversations.models import Conversation
 from rantr.conversations.forms import MessageForm
 
@@ -22,6 +25,10 @@ def conversation_detail(request, uuid):
             message.sender = request.user
             message.conversation = conversation
             message.save()
+            for participant in conversation.participants.all():
+                # Do not notify the sender
+                if participant != request.user:
+                    notify.send(request.user, recipient=participant, verb='sent you a message', action_object=conversation, target=conversation)
             return redirect('conversations:conversation_detail', uuid=uuid)
     else:
         form = MessageForm()
@@ -47,6 +54,8 @@ def send_message(request, user_id):
             message.sender = sender
             message.conversation = conversation
             message.save()
+            notify.send(sender, recipient=receiver, verb='sent you a message', action_object=conversation, target=conversation)
+
             return redirect('conversations:conversation_detail', uuid=conversation.uuid)
     else:
         form = MessageForm()
