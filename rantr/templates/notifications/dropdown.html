@@ -5,12 +5,14 @@
       </svg> {{ request.user.notifications.unread.count }}
     </button>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-      {% for notification in notifications %}
-        <a class="dropdown-item" href="{{ notification.data.action_object.get_absolute_url }}">
+      {% for notification in request.user.notifications.unread %}
+        <a class="dropdown-item" href="{{ notification.target.get_absolute_url }}">
           {{ notification.actor }} {{ notification.verb }}
         </a>
       {% empty %}
         <span class="dropdown-item">No notifications</span>
       {% endfor %}
     </div>
+
+
 </div>

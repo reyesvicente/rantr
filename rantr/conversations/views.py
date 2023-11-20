@@ -28,7 +28,7 @@ def conversation_detail(request, uuid):
             for participant in conversation.participants.all():
                 # Do not notify the sender
                 if participant != request.user:
-                    notify.send(request.user, recipient=participant, verb='sent you a message', target=conversation)
+                    notify.send(request.user, recipient=participant, verb='sent you a message', action_object=conversation, target=conversation)
             return redirect('conversations:conversation_detail', uuid=uuid)
     else:
         form = MessageForm()
@@ -54,7 +54,7 @@ def send_message(request, user_id):
             message.sender = sender
             message.conversation = conversation
             message.save()
-            notify.send(sender, recipient=receiver, verb='sent you a message', target=conversation)
+            notify.send(sender, recipient=receiver, verb='sent you a message', action_object=conversation, target=conversation)
 
             return redirect('conversations:conversation_detail', uuid=conversation.uuid)
     else:
