@@ -7,7 +7,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
       {% for notification in notifications %}
         <a class="dropdown-item" href="{{ notification.data.action_object.get_absolute_url }}">
-          Notification: {{ notification.actor }} {{ notification.verb }}
+          {{ notification.actor }} {{ notification.verb }}
         </a>
       {% empty %}
         <span class="dropdown-item">No notifications</span>
