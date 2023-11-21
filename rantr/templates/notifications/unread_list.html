@@ -3,23 +3,15 @@
 
 {% block content %}
 {% notifications_unread as unread_count %}
-
+<h1>Notifications</h1>
 {% for notification in request.user.notifications.unread %}
-  <a href="{{ notification.data.action_object.get_absolute_url }}">
+  <a href="{{ notification.target.get_absolute_url }}">
     {{ notification.actor }} {{ notification.verb }} <br />
   </a>
 {% empty %}
    No new notifications <br />
 {% endfor %}
-{% if request.user.notifications.read %}
-  Read notifications: {{ request.user.notifications.read.count }} <br />
-  {% for notification in request.user.notifications.read %}
-  <a href="{{ notification.data.action_object.get_absolute_url }}">
-    {{ notification.actor }} {{ notification.verb }} <br />
-  </a>
-  {% endfor %}
-  {% if request.user.notifications.unread.count > 0 %}
-    <a href="{% url 'notifications:mark_all_as_read' %}">Mark all as read</a>    
-  {% endif %}
+{% if request.user.notifications.unread.count > 0 %}
+<a href="{% url 'notifications:mark_all_as_read' %}">Mark all as read</a><br />
 {% endif %}
 {% endblock content %}
