@@ -23,6 +23,7 @@ def add_comment(request, rant_uuid):
             content=content,
             parent=parent,
         )
-    notify.send(request.user, recipient=rant.user, verb='commented on your rant', action_object=rant, target=rant)
+        if request.user != rant.user:
+            notify.send(request.user, recipient=rant.user, verb='commented on your rant', action_object=rant, target=rant)
 
     return redirect('rants:detail', rant.uuid)

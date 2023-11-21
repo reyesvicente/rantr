@@ -4,12 +4,14 @@
 {% block content %}
 {% notifications_unread as unread_count %}
 
-{% for notification in notifications_all %}
+{% for notification in request.user.notifications.unread %}
   <a href="{{ notification.data.action_object.get_absolute_url }}">
-    {{ notification.actor }} {{ notification.verb }} 
+    {{ notification.actor }} {{ notification.verb }} <br />
   </a>
 {% empty %}
    No notifications
 {% endfor %}
-
+{% if request.user.notifications.unread.count > 0 %}
+  <a href="{% url 'notifications:mark_all_as_read' %}">Mark all as read</a>    
+{% endif %}
 {% endblock content %}
