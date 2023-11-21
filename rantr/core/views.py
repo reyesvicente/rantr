@@ -1,8 +1,38 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView
 from django.views import View
+from django.contrib.postgres.search import SearchVector, SearchQuery
+from django.db.models import Q
 
 from notifications.models import Notification
+
+from rantr.rants.models import Rant
+from rantr.users.models import User
+
+
+def search(request):
+    query = request.GET.get('q')
+
+    rant_results = []
+    user_results = []
+
+    if query:
+        # Search for rants and users using PostgreSQL full-text search and icontains
+        rant_results = Rant.objects.annotate(
+            search=SearchVector('content'),
+        ).filter(Q(search=SearchQuery(query)) | Q(content__icontains=query))
+
+        user_results = User.objects.filter(
+            Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query)
+        )
+
+    context = {
+        'query': query,
+        'rant_results': rant_results,
+        'user_results': user_results,
+    }
+
+    return render(request, 'core/search_results.html', context)
 
 
 class UnreadNotificationsList(ListView):  
