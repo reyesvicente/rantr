@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Search Results for "{{ query }}"</h2>
+
+  {% if rant_results %}
+    <h3>Rants</h3>
+    <ul>
+      {% for rant in rant_results %}
+        <li><a href="{{ rant.get_absolute_url }}">{{ rant.content }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if user_results %}
+    <h3>Users</h3>
+    <ul>
+      {% for user in user_results %}
+        <li><a href="{{ user.get_absolute_url }}">{{ user.username }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if not rant_results and not user_results %}
+    <p>No results found.</p>
+  {% endif %}
+{% endblock %}
