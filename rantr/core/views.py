@@ -10,6 +10,10 @@ class UnreadNotificationsList(ListView):
     queryset = Notification.objects.filter(unread=True)
     template_name = 'notifications/unread_list.html'
 
+    def get_queryset(self):
+        # Filter unread notifications for the logged-in user
+        return Notification.objects.filter(recipient=self.request.user, unread=True)
+
 
 class MarkNotificationAsReadView(View):
     def get(self, request, notification_id):
