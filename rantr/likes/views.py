@@ -14,7 +14,8 @@ def like_rant(request, slug):
         Like.objects.create(user=request.user, rant=rant)
         rant.likes += 1
         rant.save()
-    notify.send(request.user, recipient=rant.user, verb='liked your rant', action_object=rant, target=rant) 
+        if request.user != rant.user:
+            notify.send(request.user, recipient=rant.user, verb='liked your rant', action_object=rant, target=rant) 
     return redirect('rants:detail', slug=slug)
 
 
