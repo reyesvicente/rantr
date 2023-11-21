@@ -9,10 +9,12 @@
         <a class="dropdown-item" href="{{ notification.target.get_absolute_url }}">
           {{ notification.actor }} {{ notification.verb }}
         </a>
+        <a href="{% url 'notifications:mark_as_read' %}">Mark as read</a>
       {% empty %}
         <span class="dropdown-item">No notifications</span>
       {% endfor %}
+      {% if request.user.notifications.unread.count > 0 %}
+          <a href="{% url 'notifications:mark_all_as_read' %}">Mark all as read</a>
+      {% endif %}
     </div>
-
-
 </div>
