@@ -75,10 +75,6 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto"> <!-- Use ms-auto to push items to the right -->
             {% if request.user.is_authenticated %}
-            <form class="d-flex" action="{% url 'core:search' %}" method="get">
-              <input class="form-control me-2" type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'rants:list' %}">Rants</a>
               </li>
@@ -93,14 +89,12 @@
               <li class="nav-item">
                 {# URL provided by django-allauth/account/urls.py #}
                 <a class="nav-link" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>
-              </li>            
+              </li>
+              <form class="d-flex" action="{% url 'core:search' %}" method="get">
+                <input class="form-control me-2" type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>         
             {% else %}
-                <li class="nav-item active">
-                  <a class="nav-link" href="{% url 'home' %}">Home <span class="visually-hidden">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'about' %}">About</a>
-                </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'rants:list' %}">Rants</a>
                 </li>
