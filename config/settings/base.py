@@ -83,6 +83,7 @@ THIRD_PARTY_APPS = [
     "crispy_bootstrap5",
     "allauth",
     "allauth.account",
+    "allauth.mfa",
     "allauth.socialaccount",
     "rest_framework",
     "rest_framework.authtoken",
@@ -293,6 +294,8 @@ ACCOUNT_FORMS = {"signup": "rantr.users.forms.UserSignupForm"}
 SOCIALACCOUNT_ADAPTER = "rantr.users.adapters.SocialAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
 SOCIALACCOUNT_FORMS = {"signup": "rantr.users.forms.UserSocialSignupForm"}
+
+MFA_ADAPTER = "allauth.mfa.adapter.DefaultMFAAdapter"
 # django-compressor
 # ------------------------------------------------------------------------------
 # https://django-compressor.readthedocs.io/en/latest/quickstart/#installation
