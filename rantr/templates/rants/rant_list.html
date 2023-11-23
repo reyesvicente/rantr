@@ -1,18 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 class="text-center">Rant List</h1>
-    <a class="btn btn-primary" href="{% url 'rants:create' %}" role="button">
-        Add Rant
-    </a><br /><br />
-    <a href="{% url 'rants:following' %}">For you</a> | <a href="{% url 'rants:list' %}">All rants</a> <br />
-    {% for rant in rants %}
-        <a href="{% url 'users:detail' rant.user.username %}">{{ rant.user.username }}</a> : <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a><br>
-        {{ rant.likes }} like{{ rant.likes|pluralize }} <br />
-        impressions : {{ rant.views }} <br />
-        {{ rant.created }}<br /> <br />
-        {% if rant.image %}
-            <img src="{{ rant.image.url }}"> <br />
-        {% endif %}<br />
-    {% endfor %}<br />
+
+<div class="container grid">
+    <div class="container grid">
+        <a class="btn btn-primary" href="{% url 'rants:create' %}" role="button">
+            Add Rant
+        </a><br /><br />
+        <a href="{% url 'rants:following' %}">For you</a> | <a href="{% url 'rants:list' %}">All rants</a> <br />
+        {% for rant in rants %}
+        <div class="ml-5 mr-5 mt-3">
+            {% if rant.image %}
+                <img src="{{ rant.image.url }}" class="card-img-top" alt="{{rant.image.url}}">
+            {% endif %}
+            <div class="card-body">
+            <p class="card-text"><a href="{% url 'users:detail' rant.user.username %}">{{ rant.user.username }}</a>: <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a></p>
+            <small>{{ rant.likes }} like{{ rant.likes|pluralize }} </small>
+            <small>{{ rant.created }}</small>
+            <small>{{ rant.views }} view{{ rant.views|pluralize}}</small>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock content %}
