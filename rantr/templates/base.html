@@ -72,9 +72,18 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <a class="navbar-brand" href="{% url 'rants:list' %}">Rantr</a>
+        <form class="d-flex" action="{% url 'core:search' %}" method="get">
+          <input class="form-control me-2" type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>            
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto"> <!-- Use ms-auto to push items to the right -->
             {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="btn btn-outline-primary" href="{% url 'rants:create' %}" role="button">
+                  Add Rant
+                </a>
+              </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'rants:list' %}">Rants</a>
               </li>
@@ -89,11 +98,7 @@
               <li class="nav-item">
                 {# URL provided by django-allauth/account/urls.py #}
                 <a class="nav-link" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>
-              </li>
-              <form class="d-flex" action="{% url 'core:search' %}" method="get">
-                <input class="form-control me-2" type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-              </form>         
+              </li>     
             {% else %}
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'rants:list' %}">Rants</a>
