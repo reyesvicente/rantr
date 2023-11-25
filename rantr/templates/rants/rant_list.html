@@ -6,18 +6,22 @@
     <div class="container grid text-center"><br />
         <a href="{% url 'rants:following' %}">For you</a> | <a href="{% url 'rants:list' %}">All rants</a> <br />
         {% for rant in rants %}
-        <div class="ml-5 mr-5 mt-3">
+        <div class="mt-5 col-lg-12 container media content-section">
             {% if rant.image %}
-                <img src="{{ rant.image.url }}" class="card-img-top" alt="{{rant.image.url}}">
+                <img class="rounded-circle article-img"src="{{ rant.image.url }}">
             {% endif %}
-            <div class="card-body">
-            <p class="card-text"><a href="{% url 'users:detail' rant.user.username %}">{{ rant.user.username }}</a>: <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a></p>
-            <small>{{ rant.likes }} like{{ rant.likes|pluralize }} </small>
-            <small>{{ rant.created }}</small>
-            <small>{{ rant.views }} view{{ rant.views|pluralize}}</small>
+            <div class="media-body">
+                <div class="article-metadata">
+                <a class="mr-2 author" href="{% url 'users:detail' rant.user.username %}"><mark>{{ rant.user.username }}</mark></a>
+                <small class="text-muted">{{ rant.created }}</small>
+                </div>
+                <p class="article-content"><a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a></p>
+                <small>{{ rant.likes }} like{{ rant.likes|pluralize }} </small>
+                <small>{{ rant.views }} view{{ rant.views|pluralize}}</small>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
 {% endblock content %}
+
