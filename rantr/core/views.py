@@ -3,6 +3,7 @@ from django.views.generic import ListView
 from django.views import View
 from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
 from notifications.models import Notification
 
@@ -10,6 +11,7 @@ from rantr.rants.models import Rant
 from rantr.users.models import User
 
 
+@login_required
 def search(request):
     query = request.GET.get('q')
 
