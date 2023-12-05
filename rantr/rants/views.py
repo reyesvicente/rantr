@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Prefetch
 from django.contrib.auth import get_user_model
@@ -33,9 +34,9 @@ class RantListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         # Calculate popularity score for each rant and order by it
-        like_weight = 1.42
-        comment_weight = 2.0  # Adjust the weights based on your preference
-        impression_weight = 0.24
+        like_weight = settings.LIKE_WEIGHT
+        comment_weight = settings.COMMENT_WEIGHT
+        impression_weight = settings.IMPRESSION_WEIGHT
 
         rants = Rant.objects.all()
         for rant in rants:
