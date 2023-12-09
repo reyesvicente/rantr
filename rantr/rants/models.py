@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -28,9 +29,9 @@ class Rant(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         # Calculate popularity_score here
-        like_weight = 1.42
-        comment_weight = 2.0
-        impression_weight = 0.24
+        like_weight = settings.LIKE_WEIGHT
+        comment_weight = settings.COMMENT_WEIGHT
+        impression_weight = settings.IMPRESSION_WEIGHT
         self.popularity_score = (self.likes * like_weight) + (self.comment_set.count() * comment_weight) + (self.views * impression_weight)
         super(Rant, self).save(*args, **kwargs)
 
