@@ -90,6 +90,8 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "drf_spectacular",
     "notifications",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",    
 ]
 
 LOCAL_APPS = [
@@ -309,7 +311,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
@@ -322,7 +324,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Rantr API",
     "DESCRIPTION": "Documentation of API endpoints of Rantr",
     "VERSION": "1.0.0",
-    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
