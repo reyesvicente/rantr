@@ -296,6 +296,10 @@ ACCOUNT_FORMS = {"signup": "rantr.users.forms.UserSignupForm"}
 SOCIALACCOUNT_ADAPTER = "rantr.users.adapters.SocialAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
 SOCIALACCOUNT_FORMS = {"signup": "rantr.users.forms.UserSocialSignupForm"}
+# <EMAIL_CONFIRM_REDIRECT_BASE_URL>/<key>
+EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/email/confirm/"
+# <PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL>/<uidb64>/<token>/
+PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/password-reset/confirm/"
 
 MFA_ADAPTER = "allauth.mfa.adapter.DefaultMFAAdapter"
 # django-compressor
