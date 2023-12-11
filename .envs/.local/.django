@@ -2,3 +2,7 @@
 # ------------------------------------------------------------------------------
 USE_DOCKER=yes
 IPYTHONDIR=/app/.ipython
+
+RANTR_LIKE_WEIGHT = 1.42
+RANTR_COMMENT_WEIGHT = 2.0
+RANTR_IMPRESSION_WEIGHT = 0.24
