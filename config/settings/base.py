@@ -287,7 +287,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "username"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = "rantr.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
@@ -341,3 +341,7 @@ IMPRESSION_WEIGHT = env("RANTR_IMPRESSION_WEIGHT")
 REST_AUTH = {
     'USER_DETAILS_SERIALIZER': 'rantr.users.api.serializers.UserSerializer',
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
