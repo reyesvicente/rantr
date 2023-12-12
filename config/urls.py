@@ -21,8 +21,8 @@ urlpatterns = [
     path('', include('rantr.core.urls', namespace='core')),
     path('inbox/', include('rantr.conversations.urls', namespace='conversations')),
     path('inbox/', include('notifications.urls', namespace='notifications')),
-    path('api-auth/', include('dj_rest_auth.urls')),
-    path('api-auth/registration/', include('dj_rest_auth.registration.urls')),    
+    #path('api-auth/', include('dj_rest_auth.urls')),
+    #path('api-auth/registration/', include('dj_rest_auth.registration.urls')),    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS

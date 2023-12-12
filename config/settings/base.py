@@ -334,9 +334,9 @@ SPECTACULAR_SETTINGS = {
 # ------------------------------------------------------------------------------
 # Algorithm scores
 
-LIKE_WEIGHT = env("RANTR_LIKE_WEIGHT")
-COMMENT_WEIGHT = env("RANTR_COMMENT_WEIGHT")
-IMPRESSION_WEIGHT = env("RANTR_IMPRESSION_WEIGHT")
+LIKE_WEIGHT = 1.42
+COMMENT_WEIGHT = 2.0
+IMPRESSION_WEIGHT = 0.24
 
 REST_AUTH = {
     'USER_DETAILS_SERIALIZER': 'rantr.users.api.serializers.UserSerializer',
