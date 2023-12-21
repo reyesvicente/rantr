@@ -6,5 +6,7 @@ A place to Rant about anything under the sun without being able to delete or upd
 [![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 ### Run it locally with docker
+- Build the container
 `docker compose -f local.yml build`
+- Run the container
 `docker compose -f local.yml up`
