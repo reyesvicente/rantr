@@ -68,6 +68,7 @@ target/
 .venv
 venv/
 ENV/
+env/
 
 # Rope project settings
 .ropeproject
@@ -278,3 +279,5 @@ rantr/media/
 .env
 .envs/*
 !.envs/.local/
+
+db.sqlite3
