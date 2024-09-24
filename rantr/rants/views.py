@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db.models import Count, F, Prefetch
+from django.db.models import Count, Prefetch, F
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
@@ -8,7 +8,9 @@ from django.views.generic import (
     DetailView,
     CreateView,
 )
-from rantr.rants.models import Rant 
+from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
+from rantr.rants.models import Rant
 from rantr.likes.models import Like
 
 User = get_user_model()
@@ -19,11 +21,12 @@ class FollowingRantsView(LoginRequiredMixin, ListView):
     context_object_name = 'rants'
 
     def get_queryset(self):
-        # Ensure that `following` is restricted to authenticated users
-        # and only valid follow relations are returned.
-        return Rant.objects.filter(
-            user__in=self.request.user.following.all()
-        ).prefetch_related('user')
+        # Fetch rants only from users that the logged-in user follows
+        if not self.request.user.is_authenticated:
+            return Rant.objects.none()
+
+        # Apply additional access control if needed for following relationships
+        return Rant.objects.filter(user__in=self.request.user.following.all())
 
 
 class RantListView(LoginRequiredMixin, ListView):
@@ -31,12 +34,12 @@ class RantListView(LoginRequiredMixin, ListView):
     context_object_name = 'rants'
 
     def get_queryset(self):
-        # Calculate popularity score at the database level to avoid loading all objects into memory
+        # Use Django's ORM to calculate popularity score in the database
         like_weight = settings.LIKE_WEIGHT
         comment_weight = settings.COMMENT_WEIGHT
         impression_weight = settings.IMPRESSION_WEIGHT
 
-        # Use Django ORM to calculate popularity scores efficiently in the database
+        # Calculate popularity score in the database using annotate()
         return Rant.objects.annotate(
             popularity_score=(
                 Count('likes') * like_weight +
@@ -49,12 +52,10 @@ class RantListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
 
-        # Prefetch related user and limit the fields to avoid exposing sensitive data
-        context['rants'] = self.model.objects.prefetch_related(
-            Prefetch('user', queryset=User.objects.only('username', 'id'))  # Fetch only necessary fields
-        )
-
-        # Get likes for these rants by this user
+        # Prefetch the user and filter likes from the logged-in user efficiently
+        context['rants'] = self.model.objects.prefetch_related('user')
+        
+        # Get likes for these rants by the current user
         liked_rants = Like.objects.filter(
             user=self.request.user,
             rant__in=context['rants']
@@ -67,26 +68,26 @@ class RantListView(LoginRequiredMixin, ListView):
             if rant:
                 rant.user_liked = True
                 rant.likes_count = like['likes_count']
-        
+
         return context
-    
+
 
 class RantDetailView(DetailView):
     model = Rant
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        rant = get_object_or_404(Rant, slug=self.kwargs['slug'])
-        
-        # Increment views using F() expression to prevent race conditions
+        rant = context['rant']
+
+        # Use atomic F() expression to avoid race conditions on view count increment
         rant.views = F('views') + 1
         rant.save(update_fields=['views'])
 
-        context['rant'] = rant
+        # Fetch updated rant object after view increment
+        context['rant'] = get_object_or_404(Rant, slug=self.kwargs['slug'])
         context['likes_count'] = rant.likes
 
         if self.request.user.is_authenticated:
-            # Check if the current user has liked the rant
             context['user_like'] = Like.objects.filter(rant=rant, user=self.request.user).exists()
 
         return context
@@ -100,10 +101,17 @@ class RantCreateView(LoginRequiredMixin, CreateView):
         # Assign the logged-in user to the rant
         form.instance.user = self.request.user
 
-        # Validate the image file if provided
-        image = form.cleaned_data.get('image')
+        # Validate and handle image uploads securely
+        image = form.cleaned_data.get('image', None)
         if image:
-            # Ensure image validation for allowed types, size, etc.
+            # Validate image file extensions
+            valid_extensions = ['jpg', 'jpeg', 'png', 'gif']
+            validator = FileExtensionValidator(allowed_extensions=valid_extensions)
+            try:
+                validator(image)
+            except ValidationError:
+                form.add_error('image', 'Invalid image format. Only jpg, jpeg, png, gif are allowed.')
+
             form.instance.image = image
 
         return super().form_valid(form)
