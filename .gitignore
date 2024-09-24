@@ -278,3 +278,5 @@ rantr/media/
 .env
 .envs/*
 !.envs/.local/
+env/
+*.sqlite3
