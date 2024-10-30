@@ -1,15 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% for rant in rants %}
-    <div>
-        <a href="{% url 'rants:following' %}">For you</a> | <a href="{% url 'rants:list' %}">All rants</a> <br />
-        <a href="{% url 'users:detail' rant.user.username %}">{{ rant.user.username }}</a> : 
-        <p><a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a></p>
-        {{ rant.likes }} like{{ rant.likes|pluralize }} <br />
-        {% if rant.image %}
-            <img src="{{ rant.image.url }}"> <br />
-        {% endif %}<br />
+<div class="container mt-5">
+    <div class="row">
+      <!-- First Column (4 units) -->
+      <div class="col-md-4">
+      </div>
+  
+      <!-- Second Column (4 units) -->
+      <div class="col-md-4">
+        
+        {% for rant in rants %}
+        <div class="mt-3 col-lg-12 container media content-section">
+            <div class='mb-3'>
+                <a href="{% url 'rants:following' %}">For you</a> | <a href="{% url 'rants:list' %}">All rants</a> <br />
+            </div>
+            {% if rant.image %}
+                <img class="rounded-circle article-img"src="{{ rant.image.url }}">
+            {% endif %}
+            <div class="media-body">
+                <div class="article-metadata">
+                <a class="mr-2 author" href="{% url 'users:detail' rant.user.username %}"><mark>{{ rant.user.username }}</mark></a>
+                <small class="text-muted">{{ rant.created }}</small>
+                </div>
+                <p class="article-content"><a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a></p>
+                <small>{{ rant.likes }} like{{ rant.likes|pluralize }} </small>
+                <small>{{ rant.views }} view{{ rant.views|pluralize}}</small>
+            </div>
+        </div>
+        {% endfor %}
+      </div>
+  
+      <!-- Third Column (4 units) -->
+      <div class="col-md-4">
+      </div>
     </div>
-    {% endfor %}
+</div>
 {% endblock content %}

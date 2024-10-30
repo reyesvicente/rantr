@@ -54,7 +54,7 @@ else:
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite3',
         }
-}
+    }
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -287,7 +287,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "username"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = "rantr.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
@@ -334,10 +334,14 @@ SPECTACULAR_SETTINGS = {
 # ------------------------------------------------------------------------------
 # Algorithm scores
 
-LIKE_WEIGHT = env("RANTR_LIKE_WEIGHT")
-COMMENT_WEIGHT = env("RANTR_COMMENT_WEIGHT")
-IMPRESSION_WEIGHT = env("RANTR_IMPRESSION_WEIGHT")
+LIKE_WEIGHT = 1.42
+COMMENT_WEIGHT = 2.0
+IMPRESSION_WEIGHT = 0.24
 
 REST_AUTH = {
     'USER_DETAILS_SERIALIZER': 'rantr.users.api.serializers.UserSerializer',
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
