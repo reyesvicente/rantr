@@ -41,12 +41,12 @@ class RantListView(LoginRequiredMixin, ListView):
 
         # Calculate popularity score in the database using annotate()
         return Rant.objects.annotate(
-            popularity_score=(
+            calculated_popularity=(
                 Count('likes') * like_weight +
-                Count('comment_set') * comment_weight +
+                Count('comments') * comment_weight +  # Use 'comments' if related_name is set
                 F('views') * impression_weight
             )
-        ).order_by('-popularity_score')
+        ).order_by('-calculated_popularity')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
