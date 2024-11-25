@@ -97,6 +97,10 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
+    def form_valid(self, form):
+        if 'profile_picture' in self.request.FILES:
+            form.instance.profile_picture = self.request.FILES['profile_picture']
+        return super().form_valid(form)
 
 user_update_view = UserUpdateView.as_view()
 
