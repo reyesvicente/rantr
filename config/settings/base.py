@@ -89,7 +89,6 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
-    "notifications",
     "dj_rest_auth",
     "dj_rest_auth.registration",    
     "whitenoise",
@@ -99,7 +98,6 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "rantr.users",
-    "rantr.notifications.apps.NotificationsConfig",
     # Your stuff: custom apps go here
     "rantr.rants",
     "rantr.comments",
@@ -162,6 +160,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "allauth.account.middleware.AccountMiddleware",  # Required by django-allauth
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "rantr.core.middleware.SecurityHeadersMiddleware",
@@ -333,6 +332,7 @@ CELERY_TASK_SOFT_TIME_LIMIT = 60
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
+DJANGO_ADMIN_FORCE_ALLAUTH = env.bool("DJANGO_ADMIN_FORCE_ALLAUTH", False)
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_AUTHENTICATION_METHOD = "username"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
@@ -354,11 +354,6 @@ PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/password-reset
 
 MFA_ADAPTER = "allauth.mfa.adapter.DefaultMFAAdapter"
 
-# Notifications
-NOTIFICATIONS_USE_JSONFIELD = True
-NOTIFICATIONS_NOTIFICATION_MODEL = 'notifications.Notification'
-NOTIFICATIONS_SOFT_DELETE = True
-
 # Channels for real-time notifications
 ASGI_APPLICATION = 'config.asgi.application'
 CHANNEL_LAYERS = {
@@ -369,6 +364,15 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+# ADMIN
+# ------------------------------------------------------------------------------
+# Django Admin URL.
+ADMIN_URL = "admin/"
+# https://docs.djangoproject.com/en/dev/ref/settings/#admins
+ADMINS = [("Highcenburg", "highcenburg@gmail.com")]
+# https://docs.djangoproject.com/en/dev/ref/settings/#managers
+MANAGERS = ADMINS
 
 # RANTS
 # ------------------------------------------------------------------------------

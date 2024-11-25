@@ -20,11 +20,7 @@ urlpatterns = [
     path('comments/', include('rantr.comments.urls', namespace="comments")),
     path('', include('rantr.core.urls', namespace='core')),
     path('inbox/', include('rantr.conversations.urls', namespace='conversations')),
-    path('inbox/notifications/', include('notifications.urls', namespace='notifications')),
-    #path('api-auth/', include('dj_rest_auth.urls')),
-    #path('api-auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('my/notifications/', include('rantr.notifications.urls', namespace='rantr_notifications')),
-    path('notifications/', include('rantr.notifications.urls')),
+    path('notifications/', include('rantr.notifications.urls', namespace='notifications')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS
