@@ -8,8 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
 from django.contrib.auth.decorators import login_required
 
-from notifications.signals import notify
-
+from rantr.notifications.signals import notify
 from rantr.rants.models import Rant
 
 User = get_user_model()

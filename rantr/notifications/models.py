@@ -20,7 +20,7 @@ class Notification(models.Model):
     deleted = models.BooleanField(default=False)
     
     class Meta:
-        app_label = 'rantr_notifications'
+        app_label = 'notifications'
         ordering = ['-timestamp']
         indexes = [
             models.Index(fields=['recipient', 'unread']),

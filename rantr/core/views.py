@@ -12,11 +12,20 @@ from django.views.decorators.cache import cache_page
 from django.db import transaction
 from django.http import JsonResponse
 
-from notifications.models import Notification
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views.generic import View
 
 from rantr.rants.models import Rant
+from rantr.comments.models import Comment
 from rantr.users.models import User
+from rantr.notifications.models import Notification
 
+User = get_user_model()
 
 @login_required
 def search(request):

@@ -1,10 +1,12 @@
 from django.db.models.signals import post_save
-from django.dispatch import receiver
-from notifications.signals import notify
+from django.dispatch import receiver, Signal
 
 from rantr.rants.models import Rant
 from rantr.comments.models import Comment
 from rantr.likes.models import Like
+
+# Define our own notification signal
+notify = Signal()
 
 @receiver(post_save, sender=Like)
 def notify_like(sender, instance, created, **kwargs):

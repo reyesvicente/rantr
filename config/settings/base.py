@@ -83,7 +83,6 @@ THIRD_PARTY_APPS = [
     "crispy_bootstrap5",
     "allauth",
     "allauth.account",
-    "allauth.mfa",
     "allauth.socialaccount",
     "rest_framework",
     "rest_framework.authtoken",
@@ -98,13 +97,13 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "rantr.users",
-    # Your stuff: custom apps go here
     "rantr.rants",
     "rantr.comments",
     "rantr.likes",
     "rantr.onboarding",
     "rantr.core",
     "rantr.conversations",
+    "rantr.notifications.apps.NotificationsConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
