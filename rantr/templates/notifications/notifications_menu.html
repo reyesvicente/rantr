@@ -1,0 +1,54 @@
+{% if notifications %}
+  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+    <div class="dropdown-header">
+      <strong>Notifications</strong>
+      {% if notifications_count %}
+        <span class="badge bg-primary rounded-pill ms-2">{{ notifications_count }}</span>
+      {% endif %}
+    </div>
+    <div class="dropdown-divider"></div>
+    {% for notification in notifications %}
+      <a class="dropdown-item {% if notification.unread %}bg-light{% endif %}" href="{{ notification.get_absolute_url }}">
+        <div class="d-flex align-items-center">
+          <div class="flex-grow-1">
+            <div class="small">
+              {% if notification.actor %}
+                <strong>{{ notification.actor }}</strong>
+              {% endif %}
+              {{ notification.verb }}
+              {% if notification.target %}
+                {% if notification.target_content_type.model == 'rant' %}
+                  your rant
+                {% elif notification.target_content_type.model == 'comment' %}
+                  your comment
+                {% endif %}
+              {% endif %}
+            </div>
+            <div class="text-muted smaller">
+              <i class="bi bi-clock"></i> {{ notification.timestamp|timesince }} ago
+            </div>
+          </div>
+          {% if notification.unread %}
+            <div class="ms-2">
+              <span class="badge bg-primary rounded-pill">New</span>
+            </div>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item text-center small text-muted" href="{% url 'notifications:list' %}">
+      View all notifications
+    </a>
+  </div>
+{% else %}
+  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+    <div class="dropdown-header">
+      <strong>Notifications</strong>
+    </div>
+    <div class="dropdown-divider"></div>
+    <div class="dropdown-item text-muted text-center">
+      No new notifications
+    </div>
+  </div>
+{% endif %}

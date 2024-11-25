@@ -10,8 +10,10 @@ from django.views.generic import (
 )
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 from rantr.rants.models import Rant
 from rantr.likes.models import Like
+from .forms import RantForm  # Assuming RantForm is defined in forms.py
 
 User = get_user_model()
 
@@ -95,23 +97,22 @@ class RantDetailView(DetailView):
 
 class RantCreateView(LoginRequiredMixin, CreateView):
     model = Rant
-    fields = ['content', 'image']
+    form_class = RantForm
+    template_name = 'rants/rant_form.html'
 
     def form_valid(self, form):
-        # Assign the logged-in user to the rant
         form.instance.user = self.request.user
+        try:
+            response = super().form_valid(form)
+            return response
+        except ValidationError as e:
+            form.add_error(None, e)
+            return self.form_invalid(form)
 
-        # Validate and handle image uploads securely
-        image = form.cleaned_data.get('image', None)
-        if image:
-            # Validate image file extensions
-            valid_extensions = ['jpg', 'jpeg', 'png', 'gif']
-            validator = FileExtensionValidator(allowed_extensions=valid_extensions)
-            try:
-                validator(image)
-            except ValidationError:
-                form.add_error('image', 'Invalid image format. Only jpg, jpeg, png, gif are allowed.')
+    def get_success_url(self):
+        return reverse('rants:detail', kwargs={'slug': self.object.slug})
 
-            form.instance.image = image
-
-        return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Create a New Rant'
+        return context

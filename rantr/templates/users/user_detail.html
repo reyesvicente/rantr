@@ -3,68 +3,120 @@
 {% load static notifications_tags %}
 
 {% block title %}
-  User: {{ object.username }}
+  {{ object.username }} - Profile
 {% endblock title %}
 
 {% block content %}
-  <div class="container mt-4">
-    <div class="row">
-      <div class="col-sm-12">
-        <h2>{{ object.username }}</h2>
-        {% if object.first_name %}
-          <p>Name: {{ object.get_full_name }}</p>
-        {% endif %}
+<div class="row">
+  <!-- Profile Card -->
+  <div class="col-lg-4">
+    <div class="card mb-4">
+      <div class="card-body text-center">
         {% if object.profile_picture %}
-          <img src="{{ object.profile_picture.url }}" class="img-fluid rounded-circle" alt="Profile Picture">
+          <img src="{{ object.profile_picture.url }}" class="rounded-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;" alt="Profile Picture">
+        {% else %}
+          <img src="{% static 'images/default-avatar.jpg' %}" class="rounded-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;" alt="Default Avatar">
         {% endif %}
-        <p>Bio: {{ object.bio }}</p>
-        <p>Location: {{ object.location }}</p>
-      </div>
-    </div>
+        <h5 class="my-3">{{ object.get_full_name|default:object.username }}</h5>
+        <p class="text-muted mb-3">@{{ object.username }}</p>
+        
+        {% if request.user != user %}
+          <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-3">
+            <a class="btn btn-primary" href="{% url 'conversations:send_message' user.id %}">
+              <i class="bi bi-envelope"></i> Message
+            </a>
+            {% if request.user in user.followers.all %}
+              <a href="{% url 'users:unfollow_user' user.username %}" class="btn btn-outline-primary">
+                <i class="bi bi-person-dash"></i> Unfollow
+              </a>
+            {% else %}
+              <a href="{% url 'users:follow_user' user.username %}" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Follow
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
 
-    {% if request.user != user %}
-      <div class="row">
-        <div class="col-sm-12">
-          <a class="btn btn-primary" href="{% url 'conversations:send_message' user.id %}">Send Message</a>
-          {% if request.user in user.followers.all %}
-            <a href="{% url 'users:unfollow_user' user.username %}" class="btn btn-link">Unfollow</a>
-          {% else %}
-            <a href="{% url 'users:follow_user' user.username %}" class="btn btn-link">Follow</a>
-          {% endif %}
+        <div class="d-flex justify-content-center mb-2">
+          <div class="px-3">
+            <h6 class="mb-0"><a href="{% url 'users:user_following' user.username %}" class="text-decoration-none">{{ followings|length }}</a></h6>
+            <small class="text-muted">Following</small>
+          </div>
+          <div class="px-3 border-start">
+            <h6 class="mb-0"><a href="{% url 'users:user_followers' user.username %}" class="text-decoration-none">{{ followers|length }}</a></h6>
+            <small class="text-muted">Followers</small>
+          </div>
         </div>
-      </div>
-    {% endif %}
-
-    <div class="row mt-3">
-      <div class="col-sm-6">
-        <p>Following <a href="{% url 'users:user_following' user.username %}">{{ followings|length }}</a></p>
-      </div>
-      <div class="col-sm-6">
-        <p>Followers <a href="{% url 'users:user_followers' user.username %}">{{ followers|length }}</a></p>
       </div>
     </div>
 
     {% if object == request.user %}
-      <!-- Action buttons -->
-      <div class="row mt-3">
-        <div class="col-sm-12">
-          <a href="{% url 'mfa_index' %}" class="btn btn-link">MFA</a>
-          <a href="{% url 'users:update' %}" class="btn btn-primary" role="button">My Info</a>
-          <a href="{% url 'account_email' %}" class="btn btn-primary" role="button">E-Mail</a>
-          <!-- Your Stuff: Custom user template URLs -->
+    <!-- Settings Card -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Settings</h5>
+        <div class="d-grid gap-2">
+          <a href="{% url 'mfa_index' %}" class="btn btn-info">
+            <i class="bi bi-shield-lock"></i> Two-Factor Authentication
+          </a>
+          <a href="{% url 'users:update' %}" class="btn btn-primary">
+            <i class="bi bi-person-gear"></i> Edit Profile
+          </a>
+          <a href="{% url 'account_email' %}" class="btn btn-primary">
+            <i class="bi bi-envelope-at"></i> Email Settings
+          </a>
         </div>
       </div>
-      <!-- End Action buttons -->
+    </div>
     {% endif %}
-    <h3>Rants: </h3>
-    {% for rant in rants %}
-      <div class="mt-4">
-        <a href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a> <br />
-        {{ rant.likes }} like{{ rant.likes|pluralize }} <br />
-        {% if rant.image %}
-          <img src="{{ rant.image.url }}" class="img-fluid" alt="Rant Image">
-        {% endif %}<br />
-      </div>
-    {% endfor %}
   </div>
+
+  <!-- Profile Info -->
+  <div class="col-lg-8">
+    <div class="card mb-4">
+      <div class="card-body">
+        {% if object.bio %}
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Bio</h6>
+          </div>
+          <div class="col-sm-9">
+            <p class="text-muted mb-0">{{ object.bio }}</p>
+          </div>
+        </div>
+        <hr>
+        {% endif %}
+
+        {% if object.location %}
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Location</h6>
+          </div>
+          <div class="col-sm-9">
+            <p class="text-muted mb-0">{{ object.location }}</p>
+          </div>
+        </div>
+        <hr>
+        {% endif %}
+
+        <div class="row">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Member Since</h6>
+          </div>
+          <div class="col-sm-9">
+            <p class="text-muted mb-0">{{ object.date_joined|date:"F Y" }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rants -->
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Recent Rants</h5>
+        {% include "rants/rant_list_snippet.html" with rants=rants %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}

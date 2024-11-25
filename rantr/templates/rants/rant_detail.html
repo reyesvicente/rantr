@@ -38,10 +38,10 @@
                     <button class="btn btn-primary" type="submit">Comment</button>
                 </form>
             {% endif %}
-            {% if rant.comment_set.count > 0 %}
+            {% if rant.comments.count > 0 %}
                 <h1>Comments:</h1>
                 <ul class="comments">
-                    {% for comment in rant.comment_set.all %}
+                    {% for comment in rant.comments.all %}
                         {% if not comment.parent %}  {# Skip displaying parent comments here #}
                             <li class="comment">
                                 <p><a href="{% url 'users:detail' comment.user.username %}">{{ comment.user.username }}</a></p>
@@ -55,9 +55,9 @@
                                     <input type="hidden" name="parent_id" value="{{ comment.id }}">
                                     <button class="btn btn-primary" type="submit">Reply</button>
                                 </form>
-                                {% if comment.comment_set.count > 0 %}
+                                {% if comment.comments.count > 0 %}
                                     <ul class="child-comments">
-                                        {% for child in comment.comment_set.all %}
+                                        {% for child in comment.comments.all %}
                                             <li class="comment">
                                                 <p><a href="{% url 'users:detail' child.user.username %}">{{ child.user.username }}</a></p>
                                                 <p>{{ child.created }}</p>
