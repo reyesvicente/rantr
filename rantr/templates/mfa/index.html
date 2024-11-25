@@ -31,7 +31,7 @@
                                     {% trans "Enable 2FA" %}
                                 </a>
                             {% else %}
-                                <form method="post" action="{% url 'mfa_totp_remove' %}">
+                                <form method="post" action="{% url 'mfa_deactivate_totp' %}">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-outline-danger">
                                         <i class="bi bi-shield-x me-2"></i>
@@ -64,7 +64,7 @@
                                     {% endif %}
                                 </p>
                             </div>
-                            <a href="{% url 'mfa_recovery_codes_generate' %}" class="btn btn-outline-primary">
+                            <a href="{% url 'mfa_generate_recovery_codes' %}" class="btn btn-outline-primary">
                                 <i class="bi bi-key me-2"></i>
                                 {% if backup_tokens %}
                                     {% trans "View Codes" %}

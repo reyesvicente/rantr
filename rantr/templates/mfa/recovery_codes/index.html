@@ -22,10 +22,10 @@
                             <div>
                                 <h5 class="mb-1">{% trans "Available Recovery Codes" %}</h5>
                                 <p class="text-muted mb-0">
-                                    {% blocktranslate count unused_count=unused_codes|length %}You have {{ unused_count }} recovery codes remaining.{% plural %}You have {{ unused_count }} recovery codes remaining.{% endblocktranslate %}
+                                    {% blocktranslate count counter=unused_codes|length %}You have {{ counter }} recovery code remaining.{% plural %}You have {{ counter }} recovery codes remaining.{% endblocktranslate %}
                                 </p>
                             </div>
-                            <form method="post" action="{% url 'mfa_generate_recovery_codes' %}" class="d-inline">
+                            <form method="post" action="{% url 'account_mfa_backup_tokens' %}" class="d-inline">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-outline-primary">
                                     <i class="bi bi-arrow-repeat me-2"></i>
@@ -40,13 +40,6 @@
                                 {% endfor %}
                             </textarea>
                         </div>
-                        <form method="post" action="{% url 'mfa_download_recovery_codes' %}" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-secondary">
-                                <i class="bi bi-download me-2"></i>
-                                {% trans "Download codes" %}
-                            </button>
-                        </form>
                     {% else %}
                         <div class="text-center py-4">
                             <div class="mb-4">
@@ -56,7 +49,7 @@
                             <p class="text-muted mb-4">
                                 {% trans "You haven't generated any recovery codes yet." %}
                             </p>
-                            <form method="post" action="{% url 'mfa_generate_recovery_codes' %}">
+                            <form method="post" action="{% url 'account_mfa_backup_tokens' %}">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-plus-circle me-2"></i>
@@ -69,7 +62,7 @@
             </div>
 
             <div class="text-center mt-4">
-                <a href="{% url 'mfa_index' %}" class="btn btn-outline-secondary">
+                <a href="{% url 'account_mfa_add' %}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left me-2"></i>
                     {% trans "Back to Security Settings" %}
                 </a>

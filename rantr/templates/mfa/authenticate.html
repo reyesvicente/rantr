@@ -17,7 +17,7 @@
                         {% trans "Please enter the authentication code from your authenticator app." %}
                     </div>
 
-                    <form method="post">
+                    <form method="post" action="{% url 'mfa_authenticate' %}">
                         {% csrf_token %}
                         {{ form|crispy }}
                         <div class="d-grid gap-2">
@@ -32,7 +32,7 @@
 
                     <div class="text-center">
                         <p class="text-muted mb-3">{% trans "Lost your authenticator device?" %}</p>
-                        <a href="{% url 'mfa_recovery_codes_enter' %}" class="btn btn-outline-secondary btn-sm">
+                        <a href="{% url 'mfa_view_recovery_codes' %}" class="btn btn-outline-secondary btn-sm">
                             <i class="bi bi-key me-2"></i>
                             {% trans "Use Recovery Code" %}
                         </a>
