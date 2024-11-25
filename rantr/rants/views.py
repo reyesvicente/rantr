@@ -79,19 +79,30 @@ class RantDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        rant = context['rant']
-
-        # Use atomic F() expression to avoid race conditions on view count increment
-        rant.views = F('views') + 1
-        rant.save(update_fields=['views'])
-
-        # Fetch updated rant object after view increment
-        context['rant'] = get_object_or_404(Rant, slug=self.kwargs['slug'])
-        context['likes_count'] = rant.likes
-
+        # Get user's like status for this rant
         if self.request.user.is_authenticated:
-            context['user_like'] = Like.objects.filter(rant=rant, user=self.request.user).exists()
-
+            context['user_like'] = Like.objects.filter(
+                user=self.request.user,
+                rant=self.object
+            ).exists()
+        
+        # Get comments in threaded order
+        comments = []
+        # First get all top-level comments
+        top_level_comments = self.object.comments.filter(parent=None).select_related('user').order_by('-created')
+        
+        for comment in top_level_comments:
+            comments.append(comment)
+            # Get replies for this comment
+            replies = self.object.comments.filter(parent=comment).select_related('user').order_by('created')
+            comments.extend(replies)
+        
+        context['comments'] = comments
+        
+        # Increment view count
+        self.object.views += 1
+        self.object.save()
+        
         return context
 
 

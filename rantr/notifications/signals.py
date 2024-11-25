@@ -10,8 +10,8 @@ notify = Signal()
 
 @receiver(post_save, sender=Like)
 def notify_like(sender, instance, created, **kwargs):
-    if created and instance.content_type.model_class() == Rant:
-        rant = instance.content_object
+    if created:
+        rant = instance.rant
         if instance.user != rant.user:  # Don't notify if user likes their own rant
             notify.send(
                 sender=instance.user,
