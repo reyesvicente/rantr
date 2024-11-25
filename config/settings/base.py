@@ -344,7 +344,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "username"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = "rantr.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
@@ -359,6 +359,10 @@ EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/email/confirm/"
 PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/password-reset/confirm/"
 
 MFA_ADAPTER = "allauth.mfa.adapter.DefaultMFAAdapter"
+
+# django-allauth MFA settings
+ALLAUTH_MFA_ENABLED = True
+ALLAUTH_MFA_ALWAYS_REVEAL_BACKUP_TOKENS = True
 
 # Channels for real-time notifications
 ASGI_APPLICATION = 'config.asgi.application'
