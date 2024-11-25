@@ -12,70 +12,83 @@
                     <h4 class="mb-0">{% trans "Set Up Two-Factor Authentication" %}</h4>
                 </div>
                 <div class="card-body">
+                    <div class="alert alert-info mb-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        {% trans "Follow these steps to set up two-factor authentication using an authenticator app:" %}
+                    </div>
+
                     <!-- Step 1: Install App -->
                     <div class="mb-4">
-                        <h5 class="fw-bold">
-                            <i class="bi bi-1-circle-fill me-2"></i>
+                        <h5 class="d-flex align-items-center">
+                            <span class="badge bg-primary me-2">1</span>
                             {% trans "Install an Authenticator App" %}
                         </h5>
-                        <p class="text-muted">
-                            {% trans "Download and install an authenticator app on your mobile device. Popular options include:" %}
+                        <p class="text-muted ms-4 mb-0">
+                            {% trans "If you haven't already, install an authenticator app on your mobile device. We recommend:" %}
                         </p>
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                <i class="bi bi-google me-2"></i>Google Authenticator
-                            </li>
-                            <li class="list-group-item">
-                                <i class="bi bi-microsoft me-2"></i>Microsoft Authenticator
-                            </li>
-                            <li class="list-group-item">
-                                <i class="bi bi-shield-check me-2"></i>Authy
-                            </li>
+                        <ul class="list-unstyled ms-4 mb-0">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Google Authenticator</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Microsoft Authenticator</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Authy</li>
                         </ul>
                     </div>
 
                     <!-- Step 2: Scan QR Code -->
                     <div class="mb-4">
-                        <h5 class="fw-bold">
-                            <i class="bi bi-2-circle-fill me-2"></i>
-                            {% trans "Scan QR Code" %}
+                        <h5 class="d-flex align-items-center">
+                            <span class="badge bg-primary me-2">2</span>
+                            {% trans "Scan the QR Code" %}
                         </h5>
-                        <p class="text-muted">
-                            {% trans "Use your authenticator app to scan this QR code:" %}
+                        <p class="text-muted ms-4 mb-3">
+                            {% trans "Open your authenticator app and scan this QR code:" %}
                         </p>
                         <div class="text-center mb-3">
-                            <img src="{{ totp_svg_data_uri }}" alt="QR Code" class="img-fluid border p-3 bg-light rounded">
+                            <img src="{{ totp_svg_data_uri }}" alt="QR Code" class="img-fluid border rounded p-2" style="max-width: 200px;">
                         </div>
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle me-2"></i>
+                        <div class="alert alert-warning ms-4">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
                             {% trans "Can't scan the QR code? Enter this key manually:" %}
-                            <code class="user-select-all d-block mt-2 p-2 bg-light rounded">{{ form.secret }}</code>
+                            <code class="ms-2">{{ form.secret }}</code>
                         </div>
                     </div>
 
-                    <!-- Step 3: Verify Setup -->
+                    <!-- Step 3: Verify Code -->
                     <div class="mb-4">
-                        <h5 class="fw-bold">
-                            <i class="bi bi-3-circle-fill me-2"></i>
+                        <h5 class="d-flex align-items-center">
+                            <span class="badge bg-primary me-2">3</span>
                             {% trans "Verify Setup" %}
                         </h5>
-                        <p class="text-muted">
+                        <p class="text-muted ms-4 mb-3">
                             {% trans "Enter the 6-digit code from your authenticator app to verify the setup:" %}
                         </p>
-                        <form method="post" class="mt-3">
-                            {% csrf_token %}
-                            {{ form|crispy }}
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-shield-check me-2"></i>
-                                    {% trans "Verify and Enable" %}
-                                </button>
-                                <a href="{% url 'mfa_index' %}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-x-circle me-2"></i>
-                                    {% trans "Cancel" %}
-                                </a>
-                            </div>
-                        </form>
+                        <div class="ms-4">
+                            <form method="post">
+                                {% csrf_token %}
+                                {{ form|crispy }}
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-shield-check me-2"></i>
+                                        {% trans "Verify and Enable 2FA" %}
+                                    </button>
+                                    <a href="{% url 'mfa_index' %}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-x-circle me-2"></i>
+                                        {% trans "Cancel" %}
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {% trans "Important Security Tips" %}
+                        </h6>
+                        <ul class="mb-0">
+                            <li>{% trans "Store your backup codes in a secure location." %}</li>
+                            <li>{% trans "Don't share your authenticator app or backup codes with anyone." %}</li>
+                            <li>{% trans "Consider using a password manager to store your backup codes." %}</li>
+                        </ul>
                     </div>
                 </div>
             </div>
