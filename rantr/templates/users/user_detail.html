@@ -22,7 +22,7 @@
         
         {% if request.user != user %}
           <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-3">
-            <a class="btn btn-primary" href="{% url 'conversations:send_message' user.id %}">
+            <a class="btn btn-primary" href="{% url 'conversations:start' user.username %}">
               <i class="bi bi-envelope"></i> Message
             </a>
             {% if request.user in user.followers.all %}
