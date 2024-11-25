@@ -48,7 +48,9 @@
       <!-- Action buttons -->
       <div class="row mt-3">
         <div class="col-sm-12">
-          <a href="{% url 'mfa_index' %}" class="btn btn-link">MFA</a>
+          <a href="{% url 'mfa_authenticate' %}" class="btn btn-info">
+            <i class="bi bi-shield-lock"></i> Two-Factor Authentication
+          </a>
           <a href="{% url 'users:update' %}" class="btn btn-primary" role="button">My Info</a>
           <a href="{% url 'account_email' %}" class="btn btn-primary" role="button">E-Mail</a>
           <!-- Your Stuff: Custom user template URLs -->

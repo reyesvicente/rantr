@@ -19,6 +19,15 @@ class NotificationListView(LoginRequiredMixin, ListView):
             recipient=self.request.user,
             deleted=False
         ).order_by('-timestamp')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['unread_count'] = self.model.objects.filter(
+            recipient=self.request.user,
+            unread=True,
+            deleted=False
+        ).count()
+        return context
 
 @login_required
 def mark_as_read(request, notification_id):

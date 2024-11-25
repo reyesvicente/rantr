@@ -13,6 +13,7 @@ urlpatterns = [
     # User management
     path("users/", include("rantr.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+    path("accounts/mfa/", include("allauth.mfa.urls")),  # Add MFA URLs
     # Your stuff: custom urls includes go here
     path('rants/', include('rantr.rants.urls', namespace='rants')),
     path('likes/', include('rantr.likes.urls', namespace='likes')),

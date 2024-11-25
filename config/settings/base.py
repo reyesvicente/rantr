@@ -84,6 +84,7 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "allauth.mfa",
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
@@ -93,6 +94,7 @@ THIRD_PARTY_APPS = [
     "whitenoise",
     "celery",
     "channels",
+    "compressor",
 ]
 
 LOCAL_APPS = [
@@ -239,7 +241,12 @@ STATICFILES_DIRS = [str(APPS_DIR / "static")]
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
 ]
+
+# Django Compressor
+COMPRESS_ENABLED = True
+COMPRESS_CSS_FILTERS = ["compressor.filters.css_default.CssAbsoluteFilter", "compressor.filters.cssmin.rCSSMinFilter"]
 
 # MEDIA
 # ------------------------------------------------------------------------------
