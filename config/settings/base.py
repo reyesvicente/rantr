@@ -358,9 +358,21 @@ EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/email/confirm/"
 # <PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL>/<uidb64>/<token>/
 PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/password-reset/confirm/"
 
+# django-allauth MFA settings
+# ------------------------------------------------------------------------------
 MFA_ADAPTER = "allauth.mfa.adapter.DefaultMFAAdapter"
 
-# django-allauth MFA settings
+MFA_FORMS = {
+    'authenticate': 'allauth.mfa.forms.AuthenticateForm',
+    'reauthenticate': 'allauth.mfa.forms.AuthenticateForm',
+    'activate_totp': 'allauth.mfa.forms.ActivateTOTPForm',
+    'deactivate_totp': 'allauth.mfa.forms.DeactivateTOTPForm',
+}
+
+MFA_RECOVERY_CODE_COUNT = 10  # Number of recovery codes
+MFA_TOTP_PERIOD = 30  # TOTP code validity period in seconds
+MFA_TOTP_DIGITS = 6  # Number of digits for TOTP codes
+
 ALLAUTH_MFA_ENABLED = True
 ALLAUTH_MFA_ALWAYS_REVEAL_BACKUP_TOKENS = True
 
