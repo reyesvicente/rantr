@@ -13,6 +13,7 @@ urlpatterns = [
     # User management
     path("users/", include("rantr.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+    path("accounts/mfa/", include("allauth.mfa.urls")),  # MFA URLs
     # Your stuff: custom urls includes go here
     path('rants/', include('rantr.rants.urls', namespace='rants')),
     path('likes/', include('rantr.likes.urls', namespace='likes')),
@@ -20,9 +21,7 @@ urlpatterns = [
     path('comments/', include('rantr.comments.urls', namespace="comments")),
     path('', include('rantr.core.urls', namespace='core')),
     path('inbox/', include('rantr.conversations.urls', namespace='conversations')),
-    path('inbox/', include('notifications.urls', namespace='notifications')),
-    #path('api-auth/', include('dj_rest_auth.urls')),
-    #path('api-auth/registration/', include('dj_rest_auth.registration.urls')),    
+    path('notifications/', include('rantr.notifications.urls', namespace='notifications')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS

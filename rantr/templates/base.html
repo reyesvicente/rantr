@@ -1,8 +1,8 @@
 
-{% load static i18n compress notifications_tags %}<!DOCTYPE html>
+{% load static i18n compress %}<!DOCTYPE html>
 {% get_media_prefix as MEDIA_PREFIX %}
 {% get_current_language as LANGUAGE_CODE %}
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}" class="h-100">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
@@ -57,133 +57,107 @@
 
 
 {% endblock javascript %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 </head>
-<body>
-  <div class="mb-1">
-    <nav class="navbar navbar-expand-md navbar-light bg-light">
-      <div class="container-fluid">
-        <button class="navbar-toggler navbar-toggler-right"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <a class="navbar-brand" href="{% url 'rants:list' %}">Rantr</a>
-        {% if request.user.is_authenticated %}
-        <form class="d-flex" action="{% url 'core:search' %}" method="get">
-          <input class="form-control me-2" type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>            
-        {% endif %}
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ms-auto"> <!-- Use ms-auto to push items to the right -->
-            {% if request.user.is_authenticated %}
-              <li class="nav-item">
-                <a class="btn btn-outline-primary" href="{% url 'rants:create' %}" role="button">
-                  Add Rant
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'rants:list' %}">Rants</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'conversations:conversation_list' %}">Messages</a>
-              </li>       
-              {% include 'notifications/dropdown.html' %}       
-              <li class="nav-item">
-                <a class="nav-link"
-                   href="{% url 'users:detail' request.user.username %}">{% translate "My Profile" %}</a>
-              </li>
-              <li class="nav-item">
-                {# URL provided by django-allauth/account/urls.py #}
-                <a class="nav-link" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>
-              </li>     
-            {% else %}
+<body class="d-flex flex-column h-100">
+  <header>
+    <div class="mb-1">
+      <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <div class="container-fluid">
+          <button class="navbar-toggler navbar-toggler-right"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#navbarSupportedContent"
+                  aria-controls="navbarSupportedContent"
+                  aria-expanded="false"
+                  aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <a class="navbar-brand" href="{% url 'rants:list' %}">Rantr</a>
+          {% if request.user.is_authenticated %}
+          <form class="d-flex" action="{% url 'core:search' %}" method="get">
+            <input class="form-control me-2" type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>            
+          {% endif %}
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto"> <!-- Use ms-auto to push items to the right -->
+              {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="btn btn-outline-primary" href="{% url 'rants:create' %}" role="button">
+                    Add Rant
+                  </a>
+                </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'rants:list' %}">Rants</a>
                 </li>
-              {% if ACCOUNT_ALLOW_REGISTRATION %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'conversations:conversation_list' %}">Messages</a>
+                </li>       
+                {% include 'notifications/dropdown.html' %}       
+                <li class="nav-item">
+                  <a class="nav-link"
+                     href="{% url 'users:detail' request.user.username %}">{% translate "My Profile" %}</a>
+                </li>
                 <li class="nav-item">
                   {# URL provided by django-allauth/account/urls.py #}
-                  <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% translate "Sign Up" %}</a>
+                  <a class="nav-link" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>
+                </li>     
+              {% else %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'rants:list' %}">Rants</a>
+                  </li>
+                {% if ACCOUNT_ALLOW_REGISTRATION %}
+                  <li class="nav-item">
+                    {# URL provided by django-allauth/account/urls.py #}
+                    <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% translate "Sign Up" %}</a>
+                  </li>
+                {% endif %}
+                <li class="nav-item">
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% translate "Sign In" %}</a>
                 </li>
               {% endif %}
-              <li class="nav-item">
-                {# URL provided by django-allauth/account/urls.py #}
-                <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% translate "Sign In" %}</a>
-              </li>
-            {% endif %}
-          </ul>
-        </div>
-      </div>
-    </nav>
-  </div>
-  <div class="container">
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-          {{ message }}
-          <button type="button"
-                  class="btn-close"
-                  data-bs-dismiss="alert"
-                  aria-label="Close"></button>
-        </div>
-      {% endfor %}
-    {% endif %}
-    {% block content %}
-      <p>Use this document as a way to quick start any new project.</p>
-      <footer class="py-3 fixed-bottom">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-4">
-              <h5>About</h5>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p> 
-            </div>
-            <div class="col-md-4">
-              <h5>Useful Links</h5>
-              <ul class="list-unstyled">
-                <li><a href="#" class="text-light">Home</a></li>
-                <li><a href="#" class="text-light">About</a></li>
-                <li><a href="#" class="text-light">Contact</a></li>
-              </ul>
-            </div>
-            <div class="col-md-4">
-              <h5>Contact</h5>
-              <ul class="list-unstyled">
-                <li>555-555-5555</li>
-                <li>email@example.com</li>
-                <li>123 Street, City, State</li>
-              </ul>
-            </div>
+            </ul>
           </div>
         </div>
-      </footer>
-    {% endblock content %}
-  </div>
-  <footer class="footer mt-auto py-3 text-center">
-    <div class="container">
-              <small class="mt-5 text-muted">Copyright {% now "Y" %} &copy Rantr. All Rights Reserved.</small><br>
-              <span><small class="text-muted">This site is a project of <a class="name" href="https://twitter.com/icenreyes" target="_blank">Vicente G. Reyes</a>.
-              Developed with <img src="https://static.djangoproject.com/img/logos/django-logo-negative.svg" style="width: 45px"; target="_blank"/> & a product of lots of <img style="width: 30px" src="https://img.icons8.com/doodle/48/000000/cafe.png">.
-              </small>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-shrink-0 flex-grow-1">
+    <div class="container h-100 py-4">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}
+        <div class="container">
+          {% block inner %}{% endblock inner %}
+        </div>
+      {% endblock content %}
+    </div>
+  </main>
+
+  <footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+      <small class="text-muted">Copyright {% now "Y" %} &copy Rantr. All Rights Reserved.</small><br>
+      <span><small class="text-muted">This site is a project of <a class="name" href="https://twitter.com/icenreyes" target="_blank">Vicente G. Reyes</a>.
+      Developed with <img src="https://static.djangoproject.com/img/logos/django-logo-negative.svg" style="width: 45px"; target="_blank"/> & a product of lots of <img style="width: 30px" src="https://img.icons8.com/doodle/48/000000/cafe.png">.</small></span>
     </div>
   </footer>
-  <!-- /container -->
-  {% block modal %}
-  {% endblock modal %}
+
+  {% block modal %}{% endblock modal %}
+
   {% block inline_javascript %}
-    {% comment %}
-    Script tags with only code, no src (defer by default). To run
-    with a "defer" so that you run inline code:
-    <script>
-      window.addEventListener('DOMContentLoaded', () => {
-        /* Run whatever you want */
-      });
-    </script>
-    {% endcomment %}
   {% endblock inline_javascript %}
 </body>
 </html>

@@ -1,0 +1,55 @@
+{% extends "account/base_reauthenticate.html" %}
+{% load i18n %}
+{% load allauth %}
+
+{% block reauthenticate_content %}
+    <div class="alert alert-info mb-4">
+        <i class="bi bi-shield-lock me-2"></i>
+        {% trans "For your security, please use your security key to continue." %}
+    </div>
+
+    {% url 'mfa_reauthenticate_webauthn' as action_url %}
+    {% element form form=form method="post" action=action_url %}
+        {% slot body %}
+            {% csrf_token %}
+            {% element fields form=form unlabeled=True %}
+            {% endelement %}
+            {{ redirect_field }}
+        {% endslot %}
+        {% slot actions %}
+            <div class="d-grid gap-2">
+                {% element button id="mfa_webauthn_reauthenticate" type="submit" tags="primary,mfa,login" %}
+                    <i class="bi bi-key-fill me-2"></i>{% trans "Use a security key" %}
+                {% endelement %}
+            </div>
+        {% endslot %}
+    {% endelement %}
+
+    <hr class="my-4">
+
+    <div class="text-center">
+        <p class="text-muted mb-3">{% trans "Lost your security key?" %}</p>
+        <div class="btn-group">
+            <a href="{% url 'mfa_view_recovery_codes' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-key me-2"></i>
+                {% trans "Use Recovery Code" %}
+            </a>
+            <a href="{% url 'mfa_authenticate_totp' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-shield-check me-2"></i>
+                {% trans "Use Authenticator App" %}
+            </a>
+        </div>
+    </div>
+
+    {{ js_data|json_script:"js_data" }}
+    {% include "mfa/webauthn/snippets/scripts.html" %}
+    <script>
+        allauth.webauthn.forms.authenticateForm({
+            ids: {
+                authenticate: "mfa_webauthn_reauthenticate",
+                credential: "{{ form.credential.auto_id }}"
+            },
+            data: JSON.parse(document.getElementById('js_data').textContent)
+        })
+    </script>
+{% endblock %}

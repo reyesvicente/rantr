@@ -8,8 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
 from django.contrib.auth.decorators import login_required
 
-from notifications.signals import notify
-
+from rantr.notifications.signals import notify
 from rantr.rants.models import Rant
 
 User = get_user_model()
@@ -71,15 +70,14 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         followings_count = followings.count()
         followers_count = followers.count()
 
-        likes_count = viewed_user.rant_set.aggregate(total_likes=Count('like'))['total_likes']
-
+        likes_count = viewed_user.rants.aggregate(total_likes=Count('like'))['total_likes']
 
         context['viewed_user'] = viewed_user
         context['followings'] = followings
         context['followers'] = followers
         context['followings_count'] = followings_count
         context['followers_count'] = followers_count
-        context['rants'] = viewed_user.rant_set.all()
+        context['rants'] = viewed_user.rants.all()
         context['likes_count'] = likes_count
 
         return context
@@ -99,6 +97,10 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
+    def form_valid(self, form):
+        if 'profile_picture' in self.request.FILES:
+            form.instance.profile_picture = self.request.FILES['profile_picture']
+        return super().form_valid(form)
 
 user_update_view = UserUpdateView.as_view()
 
