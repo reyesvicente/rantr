@@ -27,3 +27,5 @@ drf-spectacular==0.27.2  # https://github.com/tfranzel/drf-spectacular
 django-autoslug==1.9.9  # https://github.com/justinmayer/django-autoslug/
 django-notifications-hq==1.8.3  # https://github.com/django-notifications/django-notifications
 dj-rest-auth==6.0.0  # https://github.com/iMerica/dj-rest-auth 
+
+whitenoise==6.8.2  # https://pypi.org/project/whitenoise/ 
