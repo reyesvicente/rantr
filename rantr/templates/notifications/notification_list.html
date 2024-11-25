@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2">
+      <!-- Header Section -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+          Notifications
+          {% if unread_count %}
+            <span class="badge rounded-pill bg-primary ms-2">{{ unread_count }}</span>
+          {% endif %}
+        </h2>
+        <div class="d-flex gap-2">
+          {% if notifications %}
+            <button type="button" class="btn btn-outline-primary" 
+                    onclick="window.location.href='{% url 'notifications:mark_all_as_read' %}'">
+              <i class="bi bi-check2-all"></i> Mark All Read
+            </button>
+            <button type="button" class="btn btn-outline-danger" 
+                    onclick="if(confirm('Are you sure you want to delete all notifications?')) window.location.href='{% url 'notifications:delete_all' %}'">
+              <i class="bi bi-trash"></i> Delete All
+            </button>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Messages/Alerts -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- Notifications List -->
+      {% if notifications %}
+        <div class="card shadow-sm">
+          <div class="list-group list-group-flush">
+            {% for notification in notifications %}
+              <div class="list-group-item {% if notification.unread %}bg-light{% endif %} border-start-0 border-end-0">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div class="me-3">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                      {% if notification.actor %}
+                        <strong class="text-primary">{{ notification.actor }}</strong>
+                      {% endif %}
+                      <span>{{ notification.verb }}</span>
+                      {% if notification.target %}
+                        {% if notification.target_content_type.model == 'rant' %}
+                          <a href="{% url 'rants:detail' notification.target.id %}" class="text-decoration-none">your rant</a>
+                        {% elif notification.target_content_type.model == 'comment' %}
+                          <a href="{% url 'rants:detail' notification.target.rant.id %}#comment-{{ notification.target.id }}" 
+                             class="text-decoration-none">your comment</a>
+                        {% endif %}
+                      {% endif %}
+                    </div>
+                    <small class="text-muted">
+                      <i class="bi bi-clock"></i> {{ notification.timestamp|timesince }} ago
+                    </small>
+                  </div>
+                  <div class="d-flex gap-2">
+                    {% if notification.unread %}
+                      <button type="button" class="btn btn-sm btn-primary" 
+                              onclick="window.location.href='{% url 'notifications:mark_as_read' notification.id %}'">
+                        <i class="bi bi-check2"></i> Mark Read
+                      </button>
+                    {% endif %}
+                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                            onclick="if(confirm('Delete this notification?')) window.location.href='{% url 'notifications:delete' notification.id %}'">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        {% if notifications.has_other_pages %}
+          <nav class="mt-4" aria-label="Notifications pagination">
+            <ul class="pagination justify-content-center">
+              {% if notifications.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ notifications.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <span class="page-link" aria-hidden="true">&laquo;</span>
+                </li>
+              {% endif %}
+
+              {% for num in notifications.paginator.page_range %}
+                {% if notifications.number == num %}
+                  <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ num }}</span>
+                  </li>
+                {% else %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+
+              {% if notifications.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ notifications.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <span class="page-link" aria-hidden="true">&raquo;</span>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
+        {% endif %}
+      {% else %}
+        <div class="card shadow-sm">
+          <div class="card-body text-center py-5">
+            <i class="bi bi-bell-slash fs-1 text-muted mb-3"></i>
+            <h5 class="text-muted">No notifications yet</h5>
+            <p class="text-muted mb-0">When you get notifications, they'll appear here.</p>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
