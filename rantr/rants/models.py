@@ -6,6 +6,8 @@ from django.db import models
 from model_utils.models import TimeStampedModel
 from model_utils.fields import UUIDField
 from autoslug import AutoSlugField
+from django.utils.text import slugify
+from uuid import uuid4
 
 User = get_user_model()
 
@@ -40,7 +42,7 @@ class Rant(TimeStampedModel):
         impression_weight = settings.IMPRESSION_WEIGHT
         
         # Use select_related to avoid additional queries
-        comment_count = self.comment_set.count() if self.pk else 0
+        comment_count = self.comments.count() if self.pk else 0
         self.popularity_score = (self.likes * like_weight) + (comment_count * comment_weight) + (self.views * impression_weight)
         
         # Organize uploaded images by year/month
@@ -56,7 +58,7 @@ class Rant(TimeStampedModel):
         from django.db import transaction
         
         with transaction.atomic():
-            comment_count = self.comment_set.count()
+            comment_count = self.comments.count()
             like_weight = settings.LIKE_WEIGHT
             comment_weight = settings.COMMENT_WEIGHT
             impression_weight = settings.IMPRESSION_WEIGHT
@@ -77,7 +79,7 @@ class Rant(TimeStampedModel):
 
     @property
     def comment_count(self):
-        return self.comment_set.count()
+        return self.comments.count()
 
     @property
     def like_count(self):
