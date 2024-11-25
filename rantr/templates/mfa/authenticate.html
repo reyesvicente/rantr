@@ -1,0 +1,45 @@
+{% extends "mfa/base_entrance.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">{% trans "Two-Factor Authentication Required" %}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-4">
+                        <i class="bi bi-shield-lock me-2"></i>
+                        {% trans "Please enter the authentication code from your authenticator app." %}
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-shield-check me-2"></i>
+                                {% trans "Verify" %}
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="text-muted mb-3">{% trans "Lost your authenticator device?" %}</p>
+                        <a href="{% url 'mfa_recovery_codes_enter' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-key me-2"></i>
+                            {% trans "Use Recovery Code" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

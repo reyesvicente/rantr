@@ -363,10 +363,10 @@ PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/password-reset
 MFA_ADAPTER = "allauth.mfa.adapter.DefaultMFAAdapter"
 
 MFA_FORMS = {
-    'authenticate': 'allauth.mfa.forms.AuthenticateForm',
-    'reauthenticate': 'allauth.mfa.forms.AuthenticateForm',
-    'activate_totp': 'allauth.mfa.forms.ActivateTOTPForm',
-    'deactivate_totp': 'allauth.mfa.forms.DeactivateTOTPForm',
+    'authenticate': 'allauth.mfa.base.forms.AuthenticateForm',
+    'reauthenticate': 'allauth.mfa.base.forms.ReauthenticateForm',
+    'activate_totp': 'allauth.mfa.totp.forms.ActivateTOTPForm',
+    'deactivate_totp': 'allauth.mfa.totp.forms.DeactivateTOTPForm',
 }
 
 MFA_RECOVERY_CODE_COUNT = 10  # Number of recovery codes
