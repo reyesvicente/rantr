@@ -94,10 +94,12 @@ THIRD_PARTY_APPS = [
     "dj_rest_auth.registration",    
     "whitenoise",
     "celery",
+    "channels",
 ]
 
 LOCAL_APPS = [
     "rantr.users",
+    "rantr.notifications.apps.NotificationsConfig",
     # Your stuff: custom apps go here
     "rantr.rants",
     "rantr.comments",
@@ -351,6 +353,22 @@ EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/email/confirm/"
 PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/password-reset/confirm/"
 
 MFA_ADAPTER = "allauth.mfa.adapter.DefaultMFAAdapter"
+
+# Notifications
+NOTIFICATIONS_USE_JSONFIELD = True
+NOTIFICATIONS_NOTIFICATION_MODEL = 'notifications.Notification'
+NOTIFICATIONS_SOFT_DELETE = True
+
+# Channels for real-time notifications
+ASGI_APPLICATION = 'config.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 # RANTS
 # ------------------------------------------------------------------------------

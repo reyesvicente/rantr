@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Notifications {% if unread_count %}<span class="badge bg-primary">{{ unread_count }}</span>{% endif %}</h2>
+        <div>
+          {% if notifications %}
+            <a href="{% url 'rantr_notifications:mark_all_read' %}" class="btn btn-outline-primary me-2">
+              Mark All as Read
+            </a>
+            <a href="{% url 'rantr_notifications:delete_all' %}" class="btn btn-outline-danger"
+               onclick="return confirm('Are you sure you want to delete all notifications?')">
+              Delete All
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% if notifications %}
+        <div class="list-group">
+          {% for notification in notifications %}
+            <div class="list-group-item {% if notification.unread %}list-group-item-primary{% endif %}">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  {% if notification.actor %}
+                    <strong>{{ notification.actor }}</strong>
+                  {% endif %}
+                  {{ notification.verb }}
+                  {% if notification.target %}
+                    {% if notification.target_content_type.model == 'rant' %}
+                      <a href="{% url 'rants:detail' notification.target.id %}">your rant</a>
+                    {% elif notification.target_content_type.model == 'comment' %}
+                      <a href="{% url 'rants:detail' notification.target.rant.id %}#comment-{{ notification.target.id }}">your comment</a>
+                    {% endif %}
+                  {% endif %}
+                  <small class="text-muted d-block">{{ notification.timestamp|timesince }} ago</small>
+                </div>
+                <div class="btn-group">
+                  {% if notification.unread %}
+                    <a href="{% url 'rantr_notifications:mark_read' notification.id %}" class="btn btn-sm btn-outline-primary">
+                      Mark as Read
+                    </a>
+                  {% endif %}
+                  <a href="{% url 'rantr_notifications:delete' notification.id %}" class="btn btn-sm btn-outline-danger"
+                     onclick="return confirm('Are you sure you want to delete this notification?')">
+                    Delete
+                  </a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if notifications.has_other_pages %}
+          <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+              {% if notifications.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ notifications.previous_page_number }}">Previous</a>
+                </li>
+              {% endif %}
+
+              {% for num in notifications.paginator.page_range %}
+                {% if notifications.number == num %}
+                  <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                  </li>
+                {% else %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+
+              {% if notifications.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ notifications.next_page_number }}">Next</a>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
+        {% endif %}
+      {% else %}
+        <div class="alert alert-info">
+          No notifications yet.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
