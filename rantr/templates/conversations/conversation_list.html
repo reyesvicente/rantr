@@ -1,10 +1,30 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1>Your Conversations</h1>
-<ul>
-    {% for conversation in conversations %}
-        <li><a href="{% url 'conversations:conversation_detail' conversation.uuid %}">{{ conversation.participants.all|join:' and ' }}</a></li>
-    {% endfor %}
-</ul>
+<div class="container mt-4">
+    <h2>Your Conversations</h2>
+    <div class="list-group">
+        {% for conversation in conversations %}
+            {% with other_user=conversation.get_other_user %}
+                <a href="{% url 'conversations:detail' conversation.id %}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ other_user.username }}</h5>
+                        <small>{{ conversation.updated_at|timesince }} ago</small>
+                    </div>
+                    {% with last_message=conversation.messages.last %}
+                        {% if last_message %}
+                            <p class="mb-1">{{ last_message.content|truncatechars:50 }}</p>
+                        {% else %}
+                            <p class="mb-1 text-muted">No messages yet</p>
+                        {% endif %}
+                    {% endwith %}
+                </a>
+            {% endwith %}
+        {% empty %}
+            <div class="list-group-item">
+                <p class="mb-0">No conversations yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock content %}
