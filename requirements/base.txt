@@ -29,3 +29,4 @@ django-notifications-hq==1.8.3  # https://github.com/django-notifications/django
 dj-rest-auth==6.0.0  # https://github.com/iMerica/dj-rest-auth 
 
 whitenoise==6.8.2  # https://pypi.org/project/whitenoise/ 
+celery==5.3.6  # https://github.com/celery/celery
