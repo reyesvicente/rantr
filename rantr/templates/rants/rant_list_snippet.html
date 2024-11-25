@@ -1,0 +1,64 @@
+{% load humanize %}
+
+{% if rants %}
+  {% for rant in rants %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <small class="text-muted">{{ rant.created|naturaltime }}</small>
+          <small class="text-muted">
+            <i class="bi bi-heart-fill text-danger"></i> {{ rant.likes }}
+            <i class="bi bi-chat-fill text-primary ms-2"></i> {{ rant.comment_count }}
+          </small>
+        </div>
+        <p class="card-text">{{ rant.content }}</p>
+        <a href="{% url 'rants:detail' rant.slug %}" class="btn btn-sm btn-outline-primary">View Rant</a>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="text-center text-muted py-4">
+    <i class="bi bi-chat-square-dots display-4"></i>
+    <p class="mt-2">No rants yet</p>
+  </div>
+{% endif %}
+
+{% if rants.has_other_pages %}
+  <div class="d-flex justify-content-center mt-4">
+    <nav aria-label="Rant navigation">
+      <ul class="pagination">
+        {% if rants.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ rants.previous_page_number }}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link" aria-hidden="true">&laquo;</span>
+          </li>
+        {% endif %}
+
+        {% for num in rants.paginator.page_range %}
+          {% if rants.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+          {% endif %}
+        {% endfor %}
+
+        {% if rants.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ rants.next_page_number }}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link" aria-hidden="true">&raquo;</span>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+{% endif %}
