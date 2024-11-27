@@ -34,43 +34,17 @@ class FollowingRantsView(LoginRequiredMixin, ListView):
 class RantListView(LoginRequiredMixin, ListView):
     model = Rant
     context_object_name = 'rants'
+    paginate_by = 10
 
     def get_queryset(self):
-        # Use Django's ORM to calculate popularity score in the database
-        like_weight = settings.LIKE_WEIGHT
-        comment_weight = settings.COMMENT_WEIGHT
-        impression_weight = settings.IMPRESSION_WEIGHT
-
-        # Calculate popularity score in the database using annotate()
-        return Rant.objects.annotate(
-            calculated_popularity=(
-                Count('likes') * like_weight +
-                Count('comments') * comment_weight +  # Use 'comments' if related_name is set
-                F('views') * impression_weight
-            )
-        ).order_by('-calculated_popularity')
+        # The model's Meta.ordering already handles the popularity sorting
+        return Rant.objects.select_related('user').prefetch_related('comments')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
-
-        # Prefetch the user and filter likes from the logged-in user efficiently
-        context['rants'] = self.model.objects.prefetch_related('user')
-        
-        # Get likes for these rants by the current user
-        liked_rants = Like.objects.filter(
-            user=self.request.user,
-            rant__in=context['rants']
-        ).values('rant').annotate(likes_count=Count('rant'))
-
-        rant_map = {rant.uuid: rant for rant in context['rants']}
-
-        for like in liked_rants:
-            rant = rant_map.get(like['rant'])
-            if rant:
-                rant.user_liked = True
-                rant.likes_count = like['likes_count']
-
+        if self.request.user.is_authenticated:
+            user_likes = Like.objects.filter(user=self.request.user, rant__in=context['rants']).values_list('rant', flat=True)
+            context['user_likes'] = user_likes
         return context
 
 
