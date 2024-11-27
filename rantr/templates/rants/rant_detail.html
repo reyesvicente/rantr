@@ -19,9 +19,6 @@
                     <small class="text-muted ms-2">{{ rant.created|naturaltime }}</small>
                 </div>
                 <p class="card-text">{{ rant.content }}</p>
-                {% if rant.image %}
-                    <img class="card-img img-fluid mb-3" src="{{ rant.image.url }}" alt="Rant image">
-                {% endif %}
                 <div class="d-flex align-items-center gap-3 mb-3">
                     <small>
                         <i class="bi bi-heart-fill text-danger"></i> {{ rant.likes }}
@@ -47,7 +44,9 @@
                         {% endif %}
                     {% endif %}
                 </div>
-
+                {% if rant.image %}
+                    <img class="card-img img-fluid mb-3" src="{{ rant.image.url }}" alt="Rant image">
+                {% endif %}
                 {% if user.is_authenticated %}
                     <!-- Comment form for new comments -->
                     <form method="post" action="{% url 'comments:add_comment' rant.uuid %}" class="comment-form mt-3" id="main-comment-form">

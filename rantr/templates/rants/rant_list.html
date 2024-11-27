@@ -25,10 +25,7 @@
                 <p class="card-text">
                     <a class="text-decoration-none text-dark" href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a>
                 </p>
-                {% if rant.image %}
-                    <img class="card-img img-fluid mb-3" src="{{ rant.image.url }}" alt="Rant image">
-                {% endif %}
-                <div class="d-flex gap-3">
+                <div class="d-flex align-items-center gap-3 mb-3">
                     {% if user.is_authenticated %}
                         {% if rant in user_likes %}
                             <form method="post" action="{% url 'likes:rant-unlike' rant.slug %}" class="d-inline">
@@ -57,6 +54,11 @@
                         <i class="bi bi-chat-fill text-success"></i> {{ rant.comment_count }}
                     </small>
                 </div>
+                {% if rant.image %}
+                    <a href="{% url 'rants:detail' rant.slug %}">
+                        <img class="card-img img-fluid mb-3" src="{{ rant.image.url }}" alt="Rant image">
+                    </a>
+                {% endif %}
                 
                 {% if user.is_authenticated %}
                 <div class="mt-3">
