@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load static notifications_tags %}
+{% load static notifications_tags humanize %}
 
 {% block title %}
   {{ object.username }} - Profile
@@ -107,7 +107,7 @@
             <h6 class="mb-0">Member Since</h6>
           </div>
           <div class="col-sm-9">
-            <p class="text-muted mb-0">{{ object.date_joined|date:"F Y" }}</p>
+            <p class="text-muted mb-0">{{ object.date_joined|naturaltime }}</p>
           </div>
         </div>
       </div>
