@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load static notifications_tags %}
+{% load static notifications_tags humanize %}
 
 {% block title %}
   {{ object.username }} - Profile
@@ -22,7 +22,7 @@
         
         {% if request.user != user %}
           <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-3">
-            <a class="btn btn-primary" href="{% url 'conversations:send_message' user.id %}">
+            <a class="btn btn-primary" href="{% url 'conversations:start' user.username %}">
               <i class="bi bi-envelope"></i> Message
             </a>
             {% if request.user in user.followers.all %}
@@ -65,6 +65,9 @@
           <a href="{% url 'account_email' %}" class="btn btn-primary">
             <i class="bi bi-envelope-at"></i> Email Settings
           </a>
+          <a href="{% url 'account_change_password' %}" class="btn btn-primary">
+            <i class="bi bi-key"></i> Change Password
+          </a>
         </div>
       </div>
     </div>
@@ -104,7 +107,7 @@
             <h6 class="mb-0">Member Since</h6>
           </div>
           <div class="col-sm-9">
-            <p class="text-muted mb-0">{{ object.date_joined|date:"F Y" }}</p>
+            <p class="text-muted mb-0">{{ object.date_joined|naturaltime }}</p>
           </div>
         </div>
       </div>

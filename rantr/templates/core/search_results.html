@@ -1,27 +1,99 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
-  <h2>Search Results for "{{ query }}"</h2>
+<div class="container mt-5">
+  <div class="row">
+    <!-- First Column (4 units) -->
+    <div class="col-md-4">
+    </div>
 
-  {% if rant_results %}
-    <h3>Rants</h3>
-    <ul>
-      {% for rant in rant_results %}
-        <li><a href="{{ rant.get_absolute_url }}">{{ rant.content }}</a></li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+    <!-- Second Column (4 units) -->
+    <div class="col-md-4">
+      <h4 class="mb-4">Search Results for "{{ query }}"</h4>
 
-  {% if user_results %}
-    <h3>Users</h3>
-    <ul>
-      {% for user in user_results %}
-        <li><a href="{{ user.get_absolute_url }}">{{ user.username }}</a></li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+      {% if rant_results %}
+        <h5 class="mb-3">Rants</h5>
+        {% for rant in rant_results %}
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="article-metadata mb-3">
+                <a class="text-decoration-none" href="{% url 'users:detail' rant.user.username %}">
+                  <mark>{{ rant.user.username }}</mark>
+                </a>
+                <small class="text-muted ms-2">{{ rant.created|naturaltime }}</small>
+              </div>
+              <p class="card-text">
+                <a class="text-decoration-none text-dark" href="{% url 'rants:detail' rant.slug %}">{{ rant.content }}</a>
+              </p>
+              <div class="d-flex align-items-center gap-3 mb-3">
+                {% if user.is_authenticated %}
+                  {% if rant in user_likes %}
+                    <form method="post" action="{% url 'likes:rant-unlike' rant.slug %}" class="d-inline">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-sm btn-link text-danger p-0">
+                        <i class="bi bi-heart-fill"></i> {{ rant.likes }}
+                      </button>
+                    </form>
+                  {% else %}
+                    <form method="post" action="{% url 'likes:rant-like' rant.slug %}" class="d-inline">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-sm btn-link text-danger p-0">
+                        <i class="bi bi-heart"></i> {{ rant.likes }}
+                      </button>
+                    </form>
+                  {% endif %}
+                {% else %}
+                  <small>
+                    <i class="bi bi-heart-fill text-danger"></i> {{ rant.likes }}
+                  </small>
+                {% endif %}
+                <small>
+                  <i class="bi bi-chat-fill text-primary"></i> {{ rant.comments.count }}
+                </small>
+                <small>
+                  <i class="bi bi-eye-fill text-primary"></i> {{ rant.views }}
+                </small>
+              </div>
+              {% if rant.image %}
+                <a href="{% url 'rants:detail' rant.slug %}">
+                  <img class="card-img img-fluid mb-3" src="{{ rant.image.url }}" alt="Rant image">
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
 
-  {% if not rant_results and not user_results %}
-    <p>No results found.</p>
-  {% endif %}
+      {% if user_results %}
+        <h5 class="mb-3">Users</h5>
+        <div class="list-group mb-4">
+          {% for user in user_results %}
+            <a href="{% url 'users:detail' user.username %}" class="list-group-item list-group-item-action">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <mark>{{ user.username }}</mark>
+                  {% if user.profile.bio %}
+                    <small class="text-muted d-block">{{ user.profile.bio|truncatechars:100 }}</small>
+                  {% endif %}
+                </div>
+                <small class="text-muted">Member since {{ user.date_joined|naturaltime }}</small>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if not rant_results and not user_results %}
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle me-2"></i>No results found.
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Third Column (4 units) -->
+    <div class="col-md-4">
+    </div>
+  </div>
+</div>
 {% endblock %}

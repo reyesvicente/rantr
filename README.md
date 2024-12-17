@@ -5,6 +5,52 @@ A place to Rant about anything under the sun without being able to delete or upd
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
 [![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
+## Features
+
+- **User Authentication**
+  - Email verification system
+  - Password reset functionality
+  - Multi-factor authentication support
+  - User profile management
+
+- **Rant System**
+  - Create and share rants
+  - Immutable rants (no editing or deletion)
+  - Image support for rants
+  - View count tracking
+  - Popularity scoring system
+
+- **Social Features**
+  - Follow/unfollow other users
+  - Like/unlike rants
+  - Comment on rants
+  - Reply to comments
+  - View lists of rant likes
+  - User following/followers lists
+
+- **Notifications**
+  - Real-time notifications for:
+    - Likes on your rants
+    - Comments on your rants
+    - Replies to your comments
+    - New followers
+  - Mark notifications as read
+  - Notification center with all updates
+
+- **Search and Discovery**
+  - Search functionality
+  - "For You" feed with rants from followed users
+  - General feed with all rants
+
+- **Conversations**
+  - Private messaging system
+  - Conversation list and management
+  - Start new conversations with users
+
+- **Internationalization**
+  - Multi-language support
+  - Currently supports English and Portuguese
+
 ## Settings
 
 Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).

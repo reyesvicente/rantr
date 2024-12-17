@@ -1,63 +1,94 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import get_user_model
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 
-from notifications.signals import notify
-
-from rantr.conversations.models import Conversation
-from rantr.conversations.forms import MessageForm
-
-User = get_user_model()
+from rantr.conversations.models import Conversation, Message
+from rantr.users.models import User
+from rantr.notifications.models import Notification
 
 
+@login_required
 def conversation_list(request):
-    conversations = request.user.conversations.all()
-    return render(request, 'conversations/conversation_list.html', {'conversations': conversations})
+    conversations = Conversation.objects.filter(
+        Q(initiator=request.user) | Q(receiver=request.user)
+    ).order_by('-updated_at')
+    
+    context = {'conversations': conversations}
+    return render(request, 'conversations/conversation_list.html', context)
 
 
-def conversation_detail(request, uuid):
-    conversation = get_object_or_404(Conversation, uuid=uuid)
-    conversations = conversation.messages.all()
-
+@login_required
+def conversation_detail(request, conversation_id):
+    # First filter by conversation ID
+    conversation = get_object_or_404(Conversation, id=conversation_id)
+    
+    # Then check if user has access
+    if not (conversation.initiator == request.user or conversation.receiver == request.user):
+        return redirect('conversations:list')
+    
     if request.method == 'POST':
-        form = MessageForm(request.POST)
-        if form.is_valid():
-            message = form.save(commit=False)
-            message.sender = request.user
-            message.conversation = conversation
-            message.save()
-            for participant in conversation.participants.all():
-                # Do not notify the sender
-                if participant != request.user:
-                    notify.send(request.user, recipient=participant, verb='sent you a message', action_object=conversation, target=conversation)
-            return redirect('conversations:conversation_detail', uuid=uuid)
-    else:
-        form = MessageForm()
-    return render(request, 'conversations/conversation_detail.html', {'form': form, 'conversation': conversation, 'conversations': conversations})
+        content = request.POST.get('content')
+        if content:
+            message = Message.objects.create(
+                conversation=conversation,
+                sender=request.user,
+                content=content
+            )
+            
+            # Determine the recipient (the other user in the conversation)
+            recipient = conversation.receiver if conversation.initiator == request.user else conversation.initiator
+            
+            # Create notification for the message
+            Notification.objects.create(
+                recipient=recipient,
+                actor=request.user,
+                verb='messaged',
+                target_content_type=ContentType.objects.get_for_model(conversation),
+                target_object_id=conversation.id,
+                description=f"{request.user.username} sent you a message"
+            )
+            
+            conversation.save()  # Updates the updated_at timestamp
+    
+    messages = conversation.messages.order_by('created_at')
+    context = {
+        'conversation': conversation,
+        'messages': messages
+    }
+    return render(request, 'conversations/conversation_detail.html', context)
 
 
-def send_message(request, user_id):
-    sender = request.user
-    receiver = get_object_or_404(User, id=user_id)
-
-    # Check if a conversation already exists between the sender and receiver
-    conversation = Conversation.objects.filter(participants=sender).filter(participants=receiver).first()
-
-    if not conversation:
-        # If not, create a new conversation
-        conversation = Conversation.objects.create()
-        conversation.participants.add(sender, receiver)
-
-    if request.method == 'POST':
-        form = MessageForm(request.POST)
-        if form.is_valid():
-            message = form.save(commit=False)
-            message.sender = sender
-            message.conversation = conversation
-            message.save()
-            notify.send(sender, recipient=receiver, verb='sent you a message', action_object=conversation, target=conversation)
-
-            return redirect('conversations:conversation_detail', uuid=conversation.uuid)
-    else:
-        form = MessageForm()
-
-    return render(request, 'conversations/send_user_message.html', {'form': form, 'receiver': receiver})
+@login_required
+def start_conversation(request, username):
+    other_user = get_object_or_404(User, username=username)
+    
+    if other_user == request.user:
+        return redirect('conversations:list')
+    
+    # Check if a conversation already exists
+    conversation = Conversation.objects.filter(
+        (Q(initiator=request.user) & Q(receiver=other_user)) |
+        (Q(initiator=other_user) & Q(receiver=request.user))
+    ).first()
+    
+    if conversation:
+        return redirect('conversations:detail', conversation_id=conversation.id)
+    
+    # Create new conversation
+    conversation = Conversation.objects.create(
+        initiator=request.user,
+        receiver=other_user
+    )
+    
+    # Create notification for the receiver
+    Notification.objects.create(
+        recipient=other_user,
+        actor=request.user,
+        verb='started conversation',
+        target_content_type=ContentType.objects.get_for_model(conversation),
+        target_object_id=conversation.id,
+        description=f"{request.user.username} started a conversation with you"
+    )
+    
+    return redirect('conversations:detail', conversation_id=conversation.id)
