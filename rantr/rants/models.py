@@ -8,8 +8,7 @@ from django.dispatch import receiver
 from model_utils.models import TimeStampedModel
 from model_utils.fields import UUIDField
 from autoslug import AutoSlugField
-from django.utils.text import slugify
-from uuid import uuid4
+from utils.image_resizer import validate_rectangular_image
 
 User = get_user_model()
 
@@ -20,7 +19,7 @@ class Rant(TimeStampedModel):
     content = models.TextField(max_length=230)
     slug = AutoSlugField(populate_from='uuid', unique=True, db_index=True)
     likes = models.PositiveIntegerField(default=0, db_index=True)
-    image = models.ImageField(upload_to='rants/images/%Y/%m/', default=None, blank=True, null=True)
+    image = models.ImageField(upload_to='rants/images/%Y/%m/', default=None, blank=True, null=True, validators=[validate_rectangular_image])
     popularity_score = models.DecimalField(default=0.0, max_digits=10, decimal_places=5, db_index=True)
     views = models.PositiveIntegerField(default=0)
 
