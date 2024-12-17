@@ -7,9 +7,9 @@ from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 
-from notifications.signals import notify
-
+from rantr.notifications.models import Notification
 from rantr.rants.models import Rant
 
 User = get_user_model()
@@ -19,7 +19,17 @@ User = get_user_model()
 def follow_user(request, username):
     user = User.objects.get(username=username)
     request.user.following.add(user)
-    notify.send(request.user, recipient=user, action_object=user, verb='started following you')
+    
+    # Create notification for follow
+    Notification.objects.create(
+        recipient=user,
+        actor=request.user,
+        verb='started following you',
+        target_content_type=ContentType.objects.get_for_model(user),
+        target_object_id=user.id,
+        description=f"{request.user.username} started following you"
+    )
+    
     return redirect('users:detail', username)
 
 
@@ -71,15 +81,14 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         followings_count = followings.count()
         followers_count = followers.count()
 
-        likes_count = viewed_user.rant_set.aggregate(total_likes=Count('like'))['total_likes']
-
+        likes_count = viewed_user.rants.aggregate(total_likes=Count('like'))['total_likes']
 
         context['viewed_user'] = viewed_user
         context['followings'] = followings
         context['followers'] = followers
         context['followings_count'] = followings_count
         context['followers_count'] = followers_count
-        context['rants'] = viewed_user.rant_set.all()
+        context['rants'] = viewed_user.rants.all()
         context['likes_count'] = likes_count
 
         return context
@@ -99,6 +108,10 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
+    def form_valid(self, form):
+        if 'profile_picture' in self.request.FILES:
+            form.instance.profile_picture = self.request.FILES['profile_picture']
+        return super().form_valid(form)
 
 user_update_view = UserUpdateView.as_view()
 
