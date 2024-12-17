@@ -1,0 +1,50 @@
+{% load humanize %}
+
+<div class="comment mb-3">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <a href="{% url 'users:detail' comment.user.username %}" class="text-decoration-none fw-bold">
+                {{ comment.user.username }}
+            </a>
+            <small class="text-muted ms-2">{{ comment.created|naturaltime }}</small>
+        </div>
+        <small class="text-muted">
+            <i class="bi bi-heart-fill text-danger"></i> {{ comment.likes }}
+        </small>
+    </div>
+    <p class="mb-2 mt-1">{{ comment.content }}</p>
+    
+    {% if user.is_authenticated %}
+        <div class="d-flex gap-2 mb-2">
+            <button class="btn btn-sm btn-outline-primary reply-btn" 
+                    onclick="toggleReplyForm('{{ comment.id }}')">
+                <i class="bi bi-reply"></i> Reply
+            </button>
+        </div>
+        
+        <!-- Reply form (hidden by default) -->
+        <form method="post" 
+              action="{% url 'comments:add_comment' rant.uuid %}" 
+              class="reply-form mb-3 d-none"
+              id="reply-form-{{ comment.id }}">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" 
+                       name="content" 
+                       class="form-control form-control-sm" 
+                       placeholder="Write a reply...">
+                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <button class="btn btn-sm btn-primary" type="submit">Reply</button>
+            </div>
+        </form>
+    {% endif %}
+    
+    <!-- Nested replies -->
+    {% if comment.replies.exists %}
+        <div class="replies ms-4 mt-2 border-start ps-3">
+            {% for reply in comment.replies.all %}
+                {% include "comments/comment.html" with comment=reply %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

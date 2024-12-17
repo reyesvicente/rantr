@@ -1,11 +1,10 @@
 from django.urls import path
-
-from rantr.conversations.views import conversation_list, conversation_detail, send_message
+from rantr.conversations.views import conversation_list, conversation_detail, start_conversation
 
 app_name = 'conversations'
 
 urlpatterns = [
-    path('conversations/', conversation_list, name='conversation_list'),
-    path('conversation/<str:uuid>/', conversation_detail, name='conversation_detail'),
-    path('conversation/<int:user_id>/send/', send_message, name='send_message'),
+    path('', conversation_list, name='list'),
+    path('<int:conversation_id>/', conversation_detail, name='detail'),
+    path('start/<str:username>/', start_conversation, name='start'),
 ]

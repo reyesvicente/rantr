@@ -3,10 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import JsonResponse
 from django.core.paginator import Paginator
-from notifications.signals import notify
+from django.contrib.contenttypes.models import ContentType
 
 from rantr.likes.models import Like
 from rantr.rants.models import Rant
+from rantr.notifications.models import Notification
 
 
 @login_required
@@ -19,17 +20,19 @@ def like_rant(request, slug):
     like, created = Like.objects.get_or_create(user=request.user, rant=rant)
     
     if created:
-        rant.likes = rant.likes + 1
+        rant.likes += 1
         rant.save(update_fields=['likes'])
         rant.update_popularity_score()
         
+        # Create notification only if the liker is not the rant owner
         if request.user != rant.user:
-            notify.send(
-                request.user,
+            Notification.objects.create(
                 recipient=rant.user,
-                verb='liked your rant',
-                action_object=rant,
-                target=rant
+                actor=request.user,
+                verb='liked',
+                target_content_type=ContentType.objects.get_for_model(rant),
+                target_object_id=rant.id,
+                description=f"{request.user.username} liked your rant"
             )
         
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -51,7 +54,7 @@ def unlike_rant(request, slug):
     deleted = Like.objects.filter(user=request.user, rant=rant).delete()[0] > 0
     
     if deleted:
-        rant.likes = rant.likes - 1
+        rant.likes -= 1
         rant.save(update_fields=['likes'])
         rant.update_popularity_score()
         
