@@ -1,0 +1,38 @@
+{% extends "account/base_reauthenticate.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load allauth %}
+
+{% block reauthenticate_content %}
+<div class="alert alert-info mb-4">
+    <i class="bi bi-shield-lock me-2"></i>
+    {% trans "For your security, please enter the authentication code from your authenticator app to continue." %}
+</div>
+
+{% element form method="post" %}
+    {% slot body %}
+        {% csrf_token %}
+        {% element fields form=form unlabeled=True %}
+        {% endelement %}
+        {{ redirect_field }}
+    {% endslot %}
+    {% slot actions %}
+        <div class="d-grid gap-2">
+            {% element button type="submit" tags="primary,mfa,login" %}
+                <i class="bi bi-shield-check me-2"></i>{% trans "Verify" %}
+            {% endelement %}
+        </div>
+    {% endslot %}
+{% endelement %}
+
+<hr class="my-4">
+
+<div class="text-center">
+    <p class="text-muted mb-3">{% trans "Lost your authenticator device?" %}</p>
+    <a href="{% url 'mfa_view_recovery_codes' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-key me-2"></i>
+        {% trans "Use Recovery Code" %}
+    </a>
+</div>
+{% endblock %}
