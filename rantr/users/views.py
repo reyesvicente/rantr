@@ -65,7 +65,6 @@ def user_following(request, username):
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
-
     model = User
     slug_field = "username"
     slug_url_kwarg = "username"
@@ -88,7 +87,9 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         context['followers'] = followers
         context['followings_count'] = followings_count
         context['followers_count'] = followers_count
-        context['rants'] = viewed_user.rants.all()
+        
+        # Filter rants by the viewed user and order them in descending order
+        context['rants'] = viewed_user.rants.all().order_by('-created')  # Replace 'created_at' with the appropriate field for ordering
         context['likes_count'] = likes_count
 
         return context
