@@ -1,19 +1,24 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n crispy_forms_tags %}
 
 {% block content %}
-<h1>
-  {% trans "Two-Factor Authentication weeeeeeeeeee" %}
-</h1>
+<div class="container text-center">
+  <h1>
+    {% trans "Two-Factor Authentication" %}
+  </h1>
+  <div class="col-md-3">
+  </div>
+  <div class="container col-md-6">
+    <form method="post">
+      {% csrf_token %}
+      {{ form|crispy }}
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  {{ form.otp_token.label }}:
-  {{ form.otp_token }}
-
-  <button type="submit" class="btn btn-primary">
-    {% trans 'Authenticate' %}
-  </button>
-</form>
+      <button type="submit" class="btn btn-primary">
+        {% trans 'Authenticate' %}
+      </button>
+    </form>
+  </div>
+  <div class="col-md-3">
+  </div>
+</div>
 {% endblock %}
