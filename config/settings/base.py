@@ -167,10 +167,12 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "allauth.account.middleware.AccountMiddleware",  # Required by django-allauth
-    # Configure the django-otp package. Note this must be after the
-    # AuthenticationMiddleware.
-    'django_otp.middleware.OTPMiddleware',
+    # Configure the django-otp package.
+    "django_otp.middleware.OTPMiddleware",
+    # Reset login flow middleware.
+    "allauth_2fa.middleware.AllauthTwoFactorMiddleware",
+    # Allauth account middleware.
+    "allauth.account.middleware.AccountMiddleware",
 
     # Reset login flow middleware. If this middleware is included, the login
     # flow is reset if another page is loaded between login and successfully
