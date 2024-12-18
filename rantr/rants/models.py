@@ -8,7 +8,7 @@ from django.dispatch import receiver
 from model_utils.models import TimeStampedModel
 from model_utils.fields import UUIDField
 from autoslug import AutoSlugField
-from utils.image_resizer import validate_rectangular_image
+from rantr.utils.image_resizer import validate_rectangular_image
 
 User = get_user_model()
 

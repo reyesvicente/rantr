@@ -4,13 +4,13 @@
 {% block content %}
 <div class="container-fluid mt-5">
     <div class="row">
-      <!-- First Column (4 units) -->
-      <div class="col-md-4">
+      <!-- First Column (3 units) -->
+      <div class="col-md-3">
       </div>
   
-      <!-- Second Column (4 units) -->
-      <div class="col-md-4">
-        <div class='mb-3'>
+      <!-- Second Column 6 units) -->
+      <div class="col-md-6">
+        <div class='mb-3 text-center'>
             <a href="{% url 'rants:following' %}">For you</a> | <a href="{% url 'rants:list' %}">All rants</a>
         </div>
         {% for rant in rants %}
@@ -97,8 +97,8 @@
         {% endfor %}
       </div>
   
-      <!-- Third Column (4 units) -->
-      <div class="col-md-4">
+      <!-- Third Column 3 units) -->
+      <div class="col-md-3">
       </div>
     </div>
 </div>

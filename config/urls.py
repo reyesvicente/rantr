@@ -12,9 +12,9 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("rantr.users.urls", namespace="users")),
-    path("accounts/", include("allauth.urls")),
-    path("accounts/mfa/", include("allauth.mfa.urls")),  # MFA URLs
-    # Your stuff: custom urls includes go here
+    # Include the allauth and 2FA urls from their respective packages.
+    path('accounts/two-factor/', include('allauth_2fa.urls')),      
+    path("accounts/", include("allauth.urls")), 
     path('rants/', include('rantr.rants.urls', namespace='rants')),
     path('likes/', include('rantr.likes.urls', namespace='likes')),
     path('onboarding/', include('rantr.onboarding.urls', namespace='onboarding')),
