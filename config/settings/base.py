@@ -84,7 +84,13 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "allauth.mfa",
+    # Configure the django-otp package.
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_static',
+
+    # Enable two-factor auth.
+    'allauth_2fa',
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
@@ -162,6 +168,14 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "allauth.account.middleware.AccountMiddleware",  # Required by django-allauth
+    # Configure the django-otp package. Note this must be after the
+    # AuthenticationMiddleware.
+    'django_otp.middleware.OTPMiddleware',
+
+    # Reset login flow middleware. If this middleware is included, the login
+    # flow is reset if another page is loaded between login and successfully
+    # entering two-factor credentials.
+    'allauth_2fa.middleware.AllauthTwoFactorMiddleware',
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "rantr.core.middleware.SecurityHeadersMiddleware",
@@ -346,7 +360,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = "rantr.users.adapters.AccountAdapter"
+ACCOUNT_ADAPTER = 'allauth_2fa.adapter.OTPAdapter'
 # https://django-allauth.readthedocs.io/en/latest/forms.html
 ACCOUNT_FORMS = {"signup": "rantr.users.forms.UserSignupForm"}
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
@@ -357,24 +371,6 @@ SOCIALACCOUNT_FORMS = {"signup": "rantr.users.forms.UserSocialSignupForm"}
 EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/email/confirm/"
 # <PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL>/<uidb64>/<token>/
 PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/password-reset/confirm/"
-
-# django-allauth MFA settings
-# ------------------------------------------------------------------------------
-MFA_ADAPTER = "allauth.mfa.adapter.DefaultMFAAdapter"
-
-MFA_FORMS = {
-    'authenticate': 'allauth.mfa.base.forms.AuthenticateForm',
-    'reauthenticate': 'allauth.mfa.base.forms.ReauthenticateForm',
-    'activate_totp': 'allauth.mfa.totp.forms.ActivateTOTPForm',
-    'deactivate_totp': 'allauth.mfa.totp.forms.DeactivateTOTPForm',
-}
-
-MFA_RECOVERY_CODE_COUNT = 10  # Number of recovery codes
-MFA_TOTP_PERIOD = 30  # TOTP code validity period in seconds
-MFA_TOTP_DIGITS = 6  # Number of digits for TOTP codes
-
-ALLAUTH_MFA_ENABLED = True
-ALLAUTH_MFA_ALWAYS_REVEAL_BACKUP_TOKENS = True
 
 # Channels for real-time notifications
 ASGI_APPLICATION = 'config.asgi.application'
