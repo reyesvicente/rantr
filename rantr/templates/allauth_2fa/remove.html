@@ -2,20 +2,21 @@
 {% load i18n %}
 
 {% block content %}
-<h1>
-  {% trans "Disable Two-Factor Authentication" %}
-</h1>
+<div class="container mt-5 text-center">
+  <h1>
+    {% trans "Disable Two-Factor Authentication" %}
+  </h1>
 
-{% if form.otp_token %}
+  {% if form.otp_token %}
     <p>{% trans "Please enter a valid authentication token to disable two-factor authentication:" %}</p>
-{% endif %}
+  {% endif %}
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">
-    {% trans 'Disable Two-Factor' %}
-  </button>
-</form>
-
+  <form method="post" class="d-inline-block">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-danger">
+      {% trans 'Disable Two-Factor' %}
+    </button>
+  </form>
+</div>
 {% endblock %}

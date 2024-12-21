@@ -2,31 +2,36 @@
 {% load i18n %}
 
 {% block content %}
-<h1>
-  {% trans "Two-Factor Authentication Backup Tokens weeeeeeeeeee" %}
-</h1>
+<div class="container mt-5 text-center">
+  <h1>
+    {% trans "Two-Factor Authentication Backup Tokens" %}
+  </h1>
 
-{% if backup_tokens %}
-  {% if reveal_tokens %}
-    <ul>
-      {% for token in backup_tokens %}
-        <li>{{ token.token }}</li>
-      {% endfor %}
-    </ul>
+  {% if backup_tokens %}
+    {% if reveal_tokens %}
+      <ul class="list-unstyled">
+        {% for token in backup_tokens %}
+          <li>{{ token.token }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>
+        {% trans 'Backup tokens have been generated, but are not revealed here for security reasons. Press the button below to generate new ones.' %}
+      </p>
+    {% endif %}
   {% else %}
-    {% trans 'Backup tokens have been generated, but are not revealed here for security reasons. Press the button below to generate new ones.' %}
+    <p>
+      {% trans 'No tokens. Press the button below to generate some.' %}
+    </p>
   {% endif %}
-{% else %}
-  {% trans 'No tokens. Press the button below to generate some.' %}
-{% endif %}
 
-<form method="post">
-  {% csrf_token %}
-  <button type="submit" class="btn btn-primary">
-    {% trans 'Generate backup tokens' %}
-  </button>
-</form>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">
+      {% trans 'Generate backup tokens' %}
+    </button>
+  </form>
 
-<a class="btn btn-danger" href="{% url 'two-factor-remove' %}">Disable Two Factor</a>
-
+  <a class="btn btn-danger mt-3" href="{% url 'two-factor-remove' %}">Disable Two Factor</a>
+</div>
 {% endblock %}
